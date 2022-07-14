@@ -1,0 +1,11 @@
+apiVersion: v2
+name: gur-chart
+version: 1.0.0
+description: ArchHomework
+type: application
+sources:
+  - https://github.com/GUR-ok/arch
+maintainers:
+  - name: Yuriy Gorelov
+    email: gur-ok@yandex.ru
+appVersion: 1.0.0
