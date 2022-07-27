@@ -1,0 +1,314 @@
+{
+	"info": {
+		"_postman_id": "087fa7d6-c42c-4539-97a0-f64a8d6e86f4",
+		"name": "gorelov_hw_2",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "20534987"
+	},
+	"item": [
+		{
+			"name": "Create User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var id = JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"user_id\", id);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"firstName\": \"{{init_firstName}}\",\r\n    \"lastName\": \"{{init_lastName}}\",\r\n    \"email\": \"{{init_email}}\",\r\n    \"phone\": \"{{init_phone}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://{{host}}/users"
+			},
+			"response": []
+		},
+		{
+			"name": "Find User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"var firstName = (jsonData.firstName);\r",
+							"var lastName = (jsonData.lastName);\r",
+							"var email = (jsonData.email);\r",
+							"var phone = (jsonData.phone);\r",
+							"var created = (jsonData.created);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Assert firstName value is correct\", function () {\r",
+							"    pm.expect(firstName).to.equal(pm.collectionVariables.get(\"{{init_firstName}}\"))\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Assert lastName value is correct\", function () {\r",
+							"    pm.expect(lastName).to.equal(pm.collectionVariables.get(\"{{init_lastName}}\"))\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Assert email value is correct\", function () {\r",
+							"    pm.expect(email).to.equal(pm.collectionVariables.get(\"{{init_email}}\"))\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Assert created value is not null\", function () {\r",
+							"    pm.expect(created).not.null;\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.environment.get(\"uuid\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://{{host}}/users/{{user_id}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Update User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"firstName\": \"{{new_firstName}}\",\r\n    \"lastName\": \"{{new_lastName}}\",\r\n    \"email\": \"{{new_email}}\",\r\n    \"phone\": \"{{new_phone}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://{{host}}/users/{{user_id}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Find Updated User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"var firstName = (jsonData.firstName);\r",
+							"var lastName = (jsonData.lastName);\r",
+							"var email = (jsonData.email);\r",
+							"var phone = (jsonData.phone);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Assert firstName value is correct\", function () {\r",
+							"    pm.expect(firstName).to.equal(pm.collectionVariables.get(\"{{new_firstName}}\"))\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Assert lastName value is correct\", function () {\r",
+							"    pm.expect(lastName).to.equal(pm.collectionVariables.get(\"{{new_lastName}}\"))\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Assert email value is correct\", function () {\r",
+							"    pm.expect(email).to.equal(pm.collectionVariables.get(\"{{new_email}}\"))\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Assert phone value is correct\", function () {\r",
+							"    pm.expect(phone).to.equal(pm.collectionVariables.get(\"{{new_phone}}\"))\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.environment.get(\"uuid\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://{{host}}/users/{{user_id}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "http://{{host}}/users/{{user_id}}"
+			},
+			"response": []
+		},
+		{
+			"name": "Find Deleted User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.environment.get(\"uuid\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://{{host}}/users/{{user_id}}"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "init_firstName",
+			"value": "Petya",
+			"type": "string"
+		},
+		{
+			"key": "new_firstName",
+			"value": "Vasya",
+			"type": "string"
+		},
+		{
+			"key": "user_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "init_lastName",
+			"value": "Ivanov",
+			"type": "string"
+		},
+		{
+			"key": "new_lastName",
+			"value": "Petrov",
+			"type": "string"
+		},
+		{
+			"key": "init_email",
+			"value": "1@mail.ru",
+			"type": "string"
+		},
+		{
+			"key": "new_email",
+			"value": "2@ya.ru",
+			"type": "string"
+		},
+		{
+			"key": "init_phone",
+			"value": "11-22-33",
+			"type": "string"
+		},
+		{
+			"key": "new_phone",
+			"value": "89001112233",
+			"type": "string"
+		},
+		{
+			"key": "host",
+			"value": "localhost:8081",
+			"type": "string",
+			"disabled": true
+		},
+		{
+			"key": "host",
+			"value": "arch.homework/otusapp/gur-ok",
+			"type": "string"
+		}
+	]
+}

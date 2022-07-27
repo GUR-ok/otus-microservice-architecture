@@ -1,0 +1,251 @@
+{
+  "info": {
+    "_postman_id": "a93f2704-87db-481b-b7ad-4f817df3b352",
+    "name": "gorelov_hw_2",
+    "schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create User",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "var id = JSON.parse(responseBody);\r",
+              "pm.collectionVariables.set(\"user_id\", id);\r",
+              "\r",
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});"
+            ]
+          }
+        }
+      ],
+      "id": "708482c2-5b67-4eb9-968c-430158d404cd",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"name\":\"{{init_name}}\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://arch.homework/otusapp/gur-ok/users"
+      },
+      "response": []
+    },
+    {
+      "name": "Find User",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "var jsonData = pm.response.json();\r",
+              "var name = (jsonData.name);\r",
+              "\r",
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Assert name value is correct\", function () {\r",
+              "    pm.expect(name).to.equal(pm.collectionVariables.get(\"{{init_name}}\"))\r",
+              "});"
+            ]
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.environment.get(\"uuid\");"
+            ]
+          }
+        }
+      ],
+      "id": "6da56fda-5c95-41cf-9a25-178148bc3723",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://arch.homework/otusapp/gur-ok/users/{{user_id}}"
+      },
+      "response": []
+    },
+    {
+      "name": "Update User",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});"
+            ]
+          }
+        }
+      ],
+      "id": "8dd9a27f-2b8a-4033-a4e4-fe1e19b8dfbf",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"name\":\"{{new_name}}\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://arch.homework/otusapp/gur-ok/users/{{user_id}}"
+      },
+      "response": []
+    },
+    {
+      "name": "Find Updated User",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "var jsonData = pm.response.json();\r",
+              "var name = (jsonData.name);\r",
+              "\r",
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Assert name value is correct\", function () {\r",
+              "    pm.expect(name).to.equal(pm.collectionVariables.get(\"{{new_name}}\"))\r",
+              "});"
+            ]
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.environment.get(\"uuid\");"
+            ]
+          }
+        }
+      ],
+      "id": "354b7777-193b-4e91-ab7b-ef0a9acf3ee6",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://arch.homework/otusapp/gur-ok/users/{{user_id}}"
+      },
+      "response": []
+    },
+    {
+      "name": "Delete User",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});"
+            ]
+          }
+        }
+      ],
+      "id": "cb275d85-eaa7-4ef4-aebc-d012031aafb4",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": "http://arch.homework/otusapp/gur-ok/users/{{user_id}}"
+      },
+      "response": []
+    },
+    {
+      "name": "Find Deleted User",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 500\", function () {\r",
+              "    pm.response.to.have.status(500);\r",
+              "});"
+            ]
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.environment.get(\"uuid\");"
+            ]
+          }
+        }
+      ],
+      "id": "9e647d6e-9d68-47ee-a187-4637d44856b1",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://arch.homework/otusapp/gur-ok/users/{{user_id}}"
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "id": "54d4c5fa-9ec7-4f42-9045-9c10cee17c03",
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "id": "03d71dc8-2752-4f0a-9018-526944d2062c",
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "id": "b37ddbd0-8ee8-45e9-8ed5-d95906228673",
+      "key": "init_name",
+      "value": "Petya",
+      "type": "string"
+    },
+    {
+      "id": "900b9a29-4fe3-44a3-a55e-38bc12a254bb",
+      "key": "new_name",
+      "value": "Vasya",
+      "type": "string"
+    },
+    {
+      "id": "722165d9-676d-43ed-9135-fc46f1d06a45",
+      "key": "user_id",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}

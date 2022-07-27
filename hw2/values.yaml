@@ -1,0 +1,36 @@
+config:
+  name: otus-hw02-configmap
+  port: 8000
+  ddl: validate
+secret:
+  name: otus-hw02-secret
+deployment:
+  app:
+    name: otus-hw02-deployment
+    type: NodePort
+    image: gurok/arch_homework_2
+    port: 8000
+    replicas: 3
+  db:
+    name: otus-hw02-postresql-deployment
+    type: NodePort
+    image: postgres:latest
+    port: 5432
+    replicas: 1
+service:
+  app:
+    name: otus-hw02-service
+    type: NodePort
+    protocol: TCP
+    port: 9000
+  db:
+    name: postgresql-service
+    host: "postgresql-service"
+    type: NodePort
+    port: 5432
+    sport: "5432"
+    dbname: hw2db
+    dbschema: public
+ingress:
+  name: otus-hw02-ingress
+  host: arch.homework
