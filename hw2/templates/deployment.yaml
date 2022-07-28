@@ -32,6 +32,16 @@ spec:
             initialDelaySeconds: 10
             periodSeconds: 5
           env:
+            - name: SERVER_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.config.name }}
+                  key: SERVER_PORT
+            - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.config.name }}
+                  key: SPRING_JPA_HIBERNATE_DDL_AUTO
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
