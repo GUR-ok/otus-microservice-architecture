@@ -1,5 +1,7 @@
 controller:
   kind: DaemonSet
+  extraArgs:
+    metrics-per-host: false
 
   reportNodeInternalIp: true
   podAnnotations:
@@ -11,15 +13,13 @@ controller:
       additionalLabels:
         release: prometheus
       enabled: true
-  stats:
+
+  hostPort:
     enabled: true
+    ports:
+      http: 80
+      https: 443
 
-hostPort:
-  enabled: true
-  ports:
-    http: 80
-    https: 443
-
-service:
-  type: NodePort
+  service:
+    type: NodePort
 

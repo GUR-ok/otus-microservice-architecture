@@ -2,4 +2,3 @@ prometheus:
   prometheusSpec:
     serviceMonitorSelectorNilUsesHelmValues: false
     serviceMonitorSelector: {}
-    podMonitorSelectorNilUsesHelmValues: false
