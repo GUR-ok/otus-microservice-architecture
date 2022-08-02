@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.config.name }}
+data:
+  SERVER_PORT: "{{ .Values.config.port }}"
+  SPRING_JPA_HIBERNATE_DDL_AUTO: "{{ .Values.config.ddl }}"
