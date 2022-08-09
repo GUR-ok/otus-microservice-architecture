@@ -1,7 +1,7 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
-  name: healthvs-gateway
+  name: {{ include "chart.name" . }}-vs-gateway
 spec:
   selector:
     istio: ingressgateway
@@ -16,25 +16,25 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: healthvs
+  name: {{ include "chart.name" . }}-vs
 spec:
   hosts:
     - "*"
   gateways:
-    - healthvs-gateway
+    - {{ include "chart.name" . }}-vs-gateway
   http:
     - match:
         - uri:
             exact: /health
       route:
         - destination:
-            host: health
+            host: {{ include "chart.name" . }}-service
             port:
               number: 9000
             subset: v1
           weight: 50
         - destination:
-            host: health
+            host: {{ include "chart.name" . }}-service
             port:
               number: 9000
             subset: v2
@@ -43,9 +43,9 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
-  name: health
+  name: {{ include "chart.name" . }}-destination
 spec:
-  host: health
+  host: {{ include "chart.name" . }}-service
   subsets:
     - name: v1
       labels:
