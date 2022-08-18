@@ -40,7 +40,7 @@
 			"response": []
 		},
 		{
-			"name": "Health Profiles",
+			"name": "Health Profiles NO JWT",
 			"event": [
 				{
 					"listen": "test",
@@ -56,13 +56,7 @@
 			],
 			"request": {
 				"method": "GET",
-				"header": [
-					{
-						"key": "x-auth-token",
-						"value": "a",
-						"type": "text"
-					}
-				],
+				"header": [],
 				"url": {
 					"raw": "http://{{baseUrl}}:{{port}}/health",
 					"protocol": "http",
@@ -135,8 +129,8 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"var response = JSON.parse(responseBody);\r",
-							"pm.collectionVariables.set(\"user_id\", response.userId);\r",
+							"var jsonData = pm.response.json();\r",
+							"pm.collectionVariables.set(\"user_id\", jsonData.userId);\r",
 							"\r",
 							"pm.test(\"When register with new login Then status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
@@ -180,8 +174,8 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"var response = JSON.parse(responseBody);\r",
-							"pm.collectionVariables.set(\"token\", response.token);\r",
+							"var jsonData = pm.response.json();\r",
+							"pm.collectionVariables.set(\"token\", jsonData.token);\r",
 							"\r",
 							"pm.test(\"When login with correct creds then status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
@@ -255,6 +249,138 @@
 					"path": [
 						"auth",
 						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "jwks.json",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-auth-token",
+						"value": "{{token}}",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "http://{{baseUrl}}:{{port}}/auth/.well-known/jwks.json",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"auth",
+						".well-known",
+						"jwks.json"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Health Profiles Valid  JWT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-auth-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://{{baseUrl}}:{{port}}/health",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Health Profiles InValid JWT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 401\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});\r",
+							"\r",
+							"var msg = pm.response.text();\r",
+							"\r",
+							"pm.test(\"Given invalid token Then msg value is expected\", function () {\r",
+							"    pm.expect(msg).to.equal(\"Jwt verification fails\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-auth-token",
+						"value": "{{token}}invalid_token_here",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://{{baseUrl}}:{{port}}/health",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"health"
 					]
 				}
 			},

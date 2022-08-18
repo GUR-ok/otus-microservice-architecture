@@ -14,5 +14,5 @@
     (должен быть порт 30001)
     
 ---
-- helm uninstall gorelov-arch-hw5 
+- helm uninstall gorelov-arch-hw5
 - istioctl x uninstall --purge
