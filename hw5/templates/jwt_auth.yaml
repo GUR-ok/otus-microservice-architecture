@@ -11,19 +11,6 @@ spec:
   jwtRules: # Включаем фильтр для анализа JWT токена
     - issuer: "http://arch-auth-service.arch-gur"
       jwksUri: "http://arch-auth-service.arch-gur.svc.cluster.local:9000/.well-known/jwks.json"
-#      jwks: |
-#        {
-#          "keys": [
-#            {
-#              "kty": "RSA",
-#              "e": "AQAB",
-#              "use": "sig",
-#              "kid": "gur-id",
-#              "alg": "RS256",
-#              "n": "n2OdehwpysJgxWwY3DQcBiOlf39xnHGIndpJ9n4Ebat8Ugzq5Qb2KVYI27VLS8LlsbdKvxmKy3UrvQ4BJ3degB1tlVLFRt1aryB9N29tbrVpwmXXq36Z-e0buYrcv92kwAOdRleyXa93-vC6wQ-QlKAZmw-xg6cJ7lbjTqUrQyB2QyvkIQHtE0ae_dbLVJk7GJEqqhNRKd1yTHQLnL4eyucrf3PmG7XQ21DMoxICwWglliRDyCBdlRcyiRCRzor0NS0syv5MtFAaWGgplPLJbsR4xUQdioxNXhJsw6Sdxq__2Y-UVHcj3fA1ZkjDaZ_ohIud9sTXWTEfxI8fF_WxgQ"
-#            }
-#          ]
-#        }
       forwardOriginalToken: true
       outputPayloadToHeader: "x-jwt-token"
       fromHeaders:
@@ -44,16 +31,9 @@ spec:
     - to:
         - operation:
             paths: ["/auth*"] # Разрешаем доступ к /auth всем запросам
-#    - to:
-#        - operation:
-#            paths: ["/admin*"]
-#      when:
-#        - key: request.auth.claims[groups] # Разрешаем доступ к /admin запросам, с JWT токеном внутри которого есть группа admin
-#          values: ["admin"]
     - from:
         - source:
             requestPrincipals: [ "*" ] # Запрещаем доступ к остальным ресурсам для запросов без JWT
       to:
         - operation:
             notPaths: ["/auth*"]
-#              notPaths: ["/auth*", "/admin*"]
