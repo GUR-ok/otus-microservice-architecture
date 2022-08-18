@@ -129,6 +129,9 @@
 					"listen": "test",
 					"script": {
 						"exec": [
+							"pm.collectionVariables.set (\"randomNum\", _.random (1,10000));\r",
+							"pm.collectionVariables.set (\"login\", \"login\"+pm.collectionVariables.get(\"randomNum\"));\r",
+							"\r",
 							"var jsonData = pm.response.json();\r",
 							"pm.collectionVariables.set(\"user_id\", jsonData.userId);\r",
 							"\r",
@@ -410,20 +413,8 @@
 	"variable": [
 		{
 			"key": "baseUrl",
-			"value": "localhost",
-			"type": "string",
-			"disabled": true
-		},
-		{
-			"key": "baseUrl",
 			"value": "arch.homework",
 			"type": "string"
-		},
-		{
-			"key": "port",
-			"value": "8082",
-			"type": "string",
-			"disabled": true
 		},
 		{
 			"key": "port",

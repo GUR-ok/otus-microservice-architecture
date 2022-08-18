@@ -5,3 +5,4 @@ OTUS Microservice Architecture Homework.
 - hw2 - Домашнее задание №2. CRUD
 - hw3 - Домашнее задание №3. Monitoring
 - hw4 - Домашнее задание №4. Istio
+- hw5 - Домашнее задание №5. Authorization

@@ -30,7 +30,7 @@
 #                      address:
 #                        socket_address:
 #                          address: arch-auth-service.arch-gur.svc.cluster.local
-#                          port_value: 80
+#                          port_value: 9000
 #
 #    - applyTo: HTTP_FILTER # Добавляем фильтр аутентификации на все маршруты в Gateway
 #      match:
@@ -49,7 +49,7 @@
 #                uri: http://arch-auth-service.arch-gur.svc.cluster.local
 #                cluster: ext_authz
 #                timeout: 10s
-#              path_prefix: "/auth"
+#              path_prefix: "/login"
 #              authorization_request:
 #                allowed_headers:
 #                  patterns:
