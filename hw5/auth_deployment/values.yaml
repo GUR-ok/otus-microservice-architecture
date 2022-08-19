@@ -1,0 +1,32 @@
+config:
+  name: arch-auth-configmap
+  port: 8000
+  ddl: validate
+secret:
+  name: arch-auth-secret
+deployment:
+  app:
+    type: NodePort
+    image: gurok/arch_auth
+    port: 8000
+    replicas: 2
+    jwtsecret: secret
+  db:
+    type: NodePort
+    image: postgres:latest
+    port: 5432
+    replicas: 1
+service:
+  app:
+    name: arch-auth-service
+    type: NodePort
+    protocol: TCP
+    port: 9000
+  db:
+    name: postgresql-auth-service
+    host: "postgresql-auth-service"
+    type: NodePort
+    port: 5432
+    sport: "5432"
+    dbname: arch_auth_db
+    dbschema: public
