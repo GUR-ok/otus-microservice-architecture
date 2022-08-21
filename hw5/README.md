@@ -55,3 +55,11 @@
 - helm uninstall gorelov-arch-profiles
 - istioctl x uninstall --purge
 - kubectl delete namespace arch-gur
+
+Результаты тестов:
+![nm_1.png](nm_1.png)
+![nm_2.png](nm_2.png)
+![nm_3.png](nm_3.png)
+![nm_4.png](nm_4.png)
+![nm_5.png](nm_5.png)
+![nm_6.png](nm_6.png)
