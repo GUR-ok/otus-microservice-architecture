@@ -1,8 +1,8 @@
 {
 	"info": {
-		"_postman_id": "087fa7d6-c42c-4539-97a0-f64a8d6e86f4",
+		"_postman_id": "dcf98eb6-4852-4d42-b568-fd1a8e9c8bb4",
 		"name": "gorelov_hw_2",
-		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "20534987"
 	},
 	"item": [
@@ -36,7 +36,16 @@
 						}
 					}
 				},
-				"url": "http://{{host}}/users"
+				"url": {
+					"raw": "http://{{host}}/users",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"users"
+					]
+				}
 			},
 			"response": []
 		},
@@ -59,15 +68,15 @@
 							"});\r",
 							"\r",
 							"pm.test(\"Assert firstName value is correct\", function () {\r",
-							"    pm.expect(firstName).to.equal(pm.collectionVariables.get(\"{{init_firstName}}\"))\r",
+							"    pm.expect(firstName).to.equal(pm.collectionVariables.get(\"init_firstName\"))\r",
 							"});\r",
 							"\r",
 							"pm.test(\"Assert lastName value is correct\", function () {\r",
-							"    pm.expect(lastName).to.equal(pm.collectionVariables.get(\"{{init_lastName}}\"))\r",
+							"    pm.expect(lastName).to.equal(pm.collectionVariables.get(\"init_lastName\"))\r",
 							"});\r",
 							"\r",
 							"pm.test(\"Assert email value is correct\", function () {\r",
-							"    pm.expect(email).to.equal(pm.collectionVariables.get(\"{{init_email}}\"))\r",
+							"    pm.expect(email).to.equal(pm.collectionVariables.get(\"init_email\"))\r",
 							"});\r",
 							"\r",
 							"pm.test(\"Assert created value is not null\", function () {\r",
@@ -91,7 +100,17 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": "http://{{host}}/users/{{user_id}}"
+				"url": {
+					"raw": "http://{{host}}/users/{{user_id}}",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"users",
+						"{{user_id}}"
+					]
+				}
 			},
 			"response": []
 		},
@@ -122,7 +141,17 @@
 						}
 					}
 				},
-				"url": "http://{{host}}/users/{{user_id}}"
+				"url": {
+					"raw": "http://{{host}}/users/{{user_id}}",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"users",
+						"{{user_id}}"
+					]
+				}
 			},
 			"response": []
 		},
@@ -144,19 +173,19 @@
 							"});\r",
 							"\r",
 							"pm.test(\"Assert firstName value is correct\", function () {\r",
-							"    pm.expect(firstName).to.equal(pm.collectionVariables.get(\"{{new_firstName}}\"))\r",
+							"    pm.expect(firstName).to.equal(pm.collectionVariables.get(\"new_firstName\"))\r",
 							"});\r",
 							"\r",
 							"pm.test(\"Assert lastName value is correct\", function () {\r",
-							"    pm.expect(lastName).to.equal(pm.collectionVariables.get(\"{{new_lastName}}\"))\r",
+							"    pm.expect(lastName).to.equal(pm.collectionVariables.get(\"new_lastName\"))\r",
 							"});\r",
 							"\r",
 							"pm.test(\"Assert email value is correct\", function () {\r",
-							"    pm.expect(email).to.equal(pm.collectionVariables.get(\"{{new_email}}\"))\r",
+							"    pm.expect(email).to.equal(pm.collectionVariables.get(\"new_email\"))\r",
 							"});\r",
 							"\r",
 							"pm.test(\"Assert phone value is correct\", function () {\r",
-							"    pm.expect(phone).to.equal(pm.collectionVariables.get(\"{{new_phone}}\"))\r",
+							"    pm.expect(phone).to.equal(pm.collectionVariables.get(\"new_phone\"))\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -175,7 +204,17 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": "http://{{host}}/users/{{user_id}}"
+				"url": {
+					"raw": "http://{{host}}/users/{{user_id}}",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"users",
+						"{{user_id}}"
+					]
+				}
 			},
 			"response": []
 		},
@@ -197,7 +236,17 @@
 			"request": {
 				"method": "DELETE",
 				"header": [],
-				"url": "http://{{host}}/users/{{user_id}}"
+				"url": {
+					"raw": "http://{{host}}/users/{{user_id}}",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"users",
+						"{{user_id}}"
+					]
+				}
 			},
 			"response": []
 		},
@@ -228,7 +277,17 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": "http://{{host}}/users/{{user_id}}"
+				"url": {
+					"raw": "http://{{host}}/users/{{user_id}}",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"users",
+						"{{user_id}}"
+					]
+				}
 			},
 			"response": []
 		}

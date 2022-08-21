@@ -9,7 +9,7 @@ deployment:
     type: NodePort
     image: gurok/arch_profiles
     port: 8000
-    replicas: 2
+    replicas: 1
   db:
     type: NodePort
     image: postgres:latest

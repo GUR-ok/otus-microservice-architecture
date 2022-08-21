@@ -7,71 +7,6 @@
 	},
 	"item": [
 		{
-			"name": "Health Auth",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"/auth path is not secured\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://{{baseUrl}}:{{port}}/auth/health",
-					"protocol": "http",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"port": "{{port}}",
-					"path": [
-						"auth",
-						"health"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Health Profiles NO JWT",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 403\", function () {\r",
-							"    pm.response.to.have.status(403);\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://{{baseUrl}}:{{port}}/health",
-					"protocol": "http",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"port": "{{port}}",
-					"path": [
-						"health"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "Auth Login Try",
 			"event": [
 				{
@@ -129,11 +64,9 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.collectionVariables.set (\"randomNum\", _.random (1,10000));\r",
-							"pm.collectionVariables.set (\"login\", \"login\"+pm.collectionVariables.get(\"randomNum\"));\r",
-							"\r",
 							"var jsonData = pm.response.json();\r",
 							"pm.collectionVariables.set(\"user_id\", jsonData.userId);\r",
+							"pm.collectionVariables.set(\"profile_id\", jsonData.profileId);\r",
 							"\r",
 							"pm.test(\"When register with new login Then status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
@@ -302,14 +235,26 @@
 			"response": []
 		},
 		{
-			"name": "Health Profiles Valid  JWT",
+			"name": "Read Profile Valid JWT",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"var fullName = (jsonData.fullName);\r",
+							"var age = (jsonData.age);\r",
+							"\r",
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Assert new profile fullName is null\", function () {\r",
+							"    pm.expect(fullName).null;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Assert new profile age is null\", function () {\r",
+							"    pm.expect(age).null;\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -329,21 +274,22 @@
 					}
 				],
 				"url": {
-					"raw": "http://{{baseUrl}}:{{port}}/health",
+					"raw": "http://{{baseUrl}}:{{port}}/profiles/{{profile_id}}",
 					"protocol": "http",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"port": "{{port}}",
 					"path": [
-						"health"
+						"profiles",
+						"{{profile_id}}"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Health Profiles InValid JWT",
+			"name": "Read Profile Invalid JWT",
 			"event": [
 				{
 					"listen": "test",
@@ -376,14 +322,351 @@
 					}
 				],
 				"url": {
-					"raw": "http://{{baseUrl}}:{{port}}/health",
+					"raw": "http://{{baseUrl}}:{{port}}/profiles/{{profile_id}}",
 					"protocol": "http",
 					"host": [
 						"{{baseUrl}}"
 					],
 					"port": "{{port}}",
 					"path": [
-						"health"
+						"profiles",
+						"{{profile_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Read Profile No JWT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 403\", function () {\r",
+							"    pm.response.to.have.status(403);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{baseUrl}}:{{port}}/profiles/{{profile_id}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"profiles",
+						"{{profile_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Profile Valid JWT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "x-auth-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"fullName\": \"{{new_fullName}}\",\r\n    \"age\": {{new_age}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}:{{port}}/profiles/{{profile_id}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"profiles",
+						"{{profile_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Read UpdatedProfile Valid JWT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"var fullName = (jsonData.fullName);\r",
+							"var age = (jsonData.age);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Assert firstName value is correct\", function () {\r",
+							"    pm.expect(fullName).to.equal(pm.collectionVariables.get(\"new_fullName\"))\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Assert lastName value is correct\", function () {\r",
+							"    pm.expect(age).to.equal(parseInt(pm.collectionVariables.get(\"new_age\")))\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-auth-token",
+						"value": "{{token}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://{{baseUrl}}:{{port}}/profiles/{{profile_id}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"profiles",
+						"{{profile_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Auth Register Second User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"pm.collectionVariables.set(\"profile_id_user2\", jsonData.profileId);\r",
+							"\r",
+							"pm.test(\"When register with new login Then status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"gur@mail.ru\",\r\n    \"login\": \"{{login}}2\",\r\n    \"password\": \"myPassword\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}:{{port}}/auth/register",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"auth",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Auth Login Second User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"pm.collectionVariables.set(\"token_user2\", jsonData.token);\r",
+							"\r",
+							"pm.test(\"When login with correct creds then status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"gur@mail.ru\",\r\n    \"login\": \"{{login}}2\",\r\n    \"password\": \"myPassword\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}:{{port}}/auth/login",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Read Profile Valid JWT Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 401\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});\r",
+							"\r",
+							"var msg = pm.response.text();\r",
+							"\r",
+							"pm.test(\"When try to read other profile then return unauthorized\", function () {\r",
+							"    pm.expect(msg).to.equal(\"Unauthorized!\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-auth-token",
+						"value": "{{token_user2}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://{{baseUrl}}:{{port}}/profiles/{{profile_id}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"profiles",
+						"{{profile_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Profile Valid JWT Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 401\", function () {\r",
+							"    pm.response.to.have.status(401);\r",
+							"});\r",
+							"\r",
+							"var msg = pm.response.text();\r",
+							"\r",
+							"pm.test(\"When try to read other profile then return unauthorized\", function () {\r",
+							"    pm.expect(msg).to.equal(\"Unauthorized!\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "x-auth-token",
+						"value": "{{token_user2}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"fullName\": \"{{new_fullName}}\",\r\n    \"age\": {{new_age}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}:{{port}}/profiles/{{profile_id}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"profiles",
+						"{{profile_id}}"
 					]
 				}
 			},
@@ -438,6 +721,31 @@
 		},
 		{
 			"key": "randomNum",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "profile_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "new_fullName",
+			"value": "edited_name",
+			"type": "string"
+		},
+		{
+			"key": "new_age",
+			"value": "35",
+			"type": "string"
+		},
+		{
+			"key": "profile_id_user2",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "token_user2",
 			"value": "",
 			"type": "string"
 		}

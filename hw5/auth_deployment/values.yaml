@@ -9,7 +9,7 @@ deployment:
     type: NodePort
     image: gurok/arch_auth
     port: 8000
-    replicas: 2
+    replicas: 1
     jwtsecret: secret
   db:
     type: NodePort
