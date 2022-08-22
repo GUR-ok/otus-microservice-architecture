@@ -3,7 +3,7 @@
 <u>Описание приложения:</u>
 
 ![img.png](img.png)
-
+![sequence_diag.png](sequence_diag.png)
 1) Компоненты приложения:
 
 - Сервис Аутентификации (СА) https://github.com/GUR-ok/arch-auth https://hub.docker.com/repository/docker/gurok/arch_auth 
