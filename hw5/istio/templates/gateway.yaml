@@ -36,7 +36,7 @@ spec:
             host: arch-auth-service.arch-gur.svc.cluster.local
     - match:
         - uri:
-            prefix: / # Остальные запросы направляем к echoserver
+            prefix: / # Остальные запросы направляем к profilesService
       route:
         - destination:
             port:
