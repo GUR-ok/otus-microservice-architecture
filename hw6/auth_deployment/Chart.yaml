@@ -1,0 +1,11 @@
+apiVersion: v2
+name: arch-auth
+version: 1.0.0
+description: ArchHomework Auth
+type: application
+sources:
+  - https://github.com/GUR-ok/arch-auth
+maintainers:
+  - name: Yuriy Gorelov
+    email: gur-ok@yandex.ru
+appVersion: 1.0.0

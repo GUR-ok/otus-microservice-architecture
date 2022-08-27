@@ -30,6 +30,8 @@
 
 <u>Инструкция по запуску:</u>
 
+- minikube start
+- kubectl delete namespace ingress-nginx
 - kubectl create namespace arch-gur
 - istioctl install --set profile=demo -y
 - istioctl manifest apply -f ./hw5/istio/istio-values.yaml
