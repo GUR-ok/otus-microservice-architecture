@@ -54,10 +54,13 @@ spec:
                 allowed_headers:
                   patterns:
                     - exact: "x-auth-token"
+                    - exact: "x-auth-session"
               authorization_response:
                 allowed_upstream_headers:
                   patterns:
                     - exact: "x-auth-token"
+                    # Для отладки добавления хедеров Envoy фильтром
+                    - exact: "x-custom"
 
     - applyTo: HTTP_ROUTE # Отключаем аутентификацию для маршрутов связанных с методом входа и выхода
       match:

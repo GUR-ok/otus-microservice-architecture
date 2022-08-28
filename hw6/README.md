@@ -20,6 +20,7 @@
 - kubectl delete namespace nginx-ingress
 - kubectl create namespace arch-gur
 - helm install gorelov-kafka ./hw6/kafka/
+- helm install gorelov-redis ./hw6/redis/
 - istioctl install --set profile=demo -y
 - istioctl manifest apply -f ./hw6/istio/istio-values.yaml
 - helm install gorelov-arch-hw6 ./hw6/istio/
@@ -37,6 +38,8 @@
 - kubectl port-forward -n arch-gur arch-profiles-deployment-67d58c5b57-x25q4 8080:8000
 - http://localhost:8080/swagger-ui/index.html#/kafka-controller/sendString
 - kubectl logs -f -n arch-gur arch-profiles-deployment-67d58c5b57-x25q4  
+- kubectl port-forward -n arch-gur redis-ss-0 6379:6379
+
 ---
 <u>Очистка пространства:</u>
 
@@ -46,4 +49,4 @@
 - istioctl x uninstall --purge
 - kubectl delete namespace arch-gur
 - helm uninstall gorelov-kafka
-
+- helm uninstall gorelov-redis

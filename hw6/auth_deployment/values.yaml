@@ -7,15 +7,15 @@ secret:
 deployment:
   app:
     type: NodePort
-    image: gurok/arch_auth
+    image: gurok/arch_auth_2
     port: 8000
-    replicas: 1
+    replicas: 2
     jwtsecret: secret
   db:
     type: NodePort
     image: postgres:latest
     port: 5432
-    replicas: 2
+    replicas: 1
 service:
   app:
     name: arch-auth-service
