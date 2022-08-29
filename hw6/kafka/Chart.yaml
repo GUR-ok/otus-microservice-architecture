@@ -1,0 +1,12 @@
+apiVersion: v2
+name: otus-hw06
+version: 1.0.0
+description: ArchHomework Kafka
+type: application
+sources:
+  - https://github.com/GUR-ok/arch-auth
+  - https://github.com/GUR-ok/arch-profiles
+maintainers:
+  - name: Yuriy Gorelov
+    email: gur-ok@yandex.ru
+appVersion: 1.0.0
