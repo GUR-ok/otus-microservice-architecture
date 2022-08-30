@@ -6,3 +6,4 @@ OTUS Microservice Architecture Homework.
 - hw3 - Домашнее задание №3. Monitoring
 - hw4 - Домашнее задание №4. Istio
 - hw5 - Домашнее задание №5. Authorization
+- hw6 - Домашнее задание №6. Idempotency 
