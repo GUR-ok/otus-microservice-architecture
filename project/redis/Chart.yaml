@@ -4,6 +4,8 @@ version: 1.0.0
 description: ArchHomework Redis
 type: application
 sources:
+  - https://github.com/GUR-ok/arch-auth
+  - https://github.com/GUR-ok/arch-profiles
   - https://github.com/GUR-ok/arch-order
 maintainers:
   - name: Yuriy Gorelov

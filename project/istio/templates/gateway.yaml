@@ -36,6 +36,14 @@ spec:
             host: arch-auth-service.arch-gur.svc.cluster.local
     - match:
         - uri:
+            prefix: /orders/
+      route:
+        - destination:
+            port:
+              number: 9000
+            host: arch-order-service.arch-gur.svc.cluster.local
+    - match:
+        - uri:
             prefix: / # Остальные запросы направляем к profilesService
       route:
         - destination:
