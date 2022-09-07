@@ -7,3 +7,4 @@ data:
   SERVER_PORT: "{{ .Values.config.port }}"
   SPRING_JPA_HIBERNATE_DDL_AUTO: "{{ .Values.config.ddl }}"
   REDIS_SERVER: "{{ .Values.redis.name }}"
+  SPRING_PROFILES_ACTIVE: "hw06"

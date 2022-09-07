@@ -16,7 +16,7 @@ deployment:
 service:
   app:
     name: arch-order-service
-    type: ClusterIP
+    type: NodePort
     protocol: TCP
     port: 9000
   db:
@@ -27,5 +27,8 @@ service:
     sport: "5432"
     dbname: arch_order_db
     dbschema: public
-  redis:
-    name: redis-order
+redis:
+  name: redis-order
+ingress:
+  name: otus-hw06-ingress
+  host: arch.homework

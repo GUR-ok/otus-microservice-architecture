@@ -72,7 +72,21 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.secret.name }}
                   key: SPRING_DATASOURCE_PASSWORD
-
+            - name: REDIS_SERVER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.config.name }}
+                  key: REDIS_SERVER
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.secret.name }}
+                  key: REDIS_PASSWORD
+            - name: SPRING_PROFILES_ACTIVE
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.config.name }}
+                  key: SPRING_PROFILES_ACTIVE
 ---
 apiVersion: apps/v1
 kind: StatefulSet

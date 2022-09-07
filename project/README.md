@@ -44,46 +44,46 @@ II. Создание заказа
 1) Ключ идемпотентности в реквесте
 2) Сохранение ключа и проверка
 
-### Инструкция по запуску:
+#### Инструкция по запуску:
 
-- 'minikube start'
-- 'kubectl delete namespace ingress-nginx'
-- 'kubectl delete ingressClass nginx'
-- 'kubectl create namespace arch-gur'
-- 'helm install gorelov-kafka ./project/kafka/'
-- 'helm install gorelov-redis ./project/redis/ -f ./project/redis/auth-values.yaml'
-- 'helm install gorelov-redis-order ./project/redis/ -f ./project/redis/order-values.yaml'
-- 'istioctl install --set profile=demo -y'
-- 'istioctl manifest apply -f ./project/istio/istio-values.yaml'
-- 'kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.11/samples/addons/prometheus.yaml'
-- 'kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.11/samples/addons/kiali.yaml'
-- 'helm install gorelov-arch-project ./project/istio/'
-- 'helm install gorelov-arch-auth ./project/auth_deployment/'
-- 'helm install gorelov-arch-profiles ./project/profiles_deployment/'
+- `minikube start`
+- `kubectl delete namespace ingress-nginx`
+- `kubectl delete ingressClass nginx`
+- `kubectl create namespace arch-gur`
+- `helm install gorelov-kafka ./project/kafka/`
+- `helm install gorelov-redis ./project/redis/ -f ./project/redis/auth-values.yaml`
+- `helm install gorelov-redis-order ./project/redis/ -f ./project/redis/order-values.yaml`
+- `istioctl install --set profile=demo -y`
+- `istioctl manifest apply -f ./project/istio/istio-values.yaml`
+- `kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.11/samples/addons/prometheus.yaml`
+- `kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.11/samples/addons/kiali.yaml`
+- `helm install gorelov-arch-project ./project/istio/`
+- `helm install gorelov-arch-auth ./project/auth_deployment/`
+- `helm install gorelov-arch-profiles ./project/profiles_deployment/`
 
-### Диагностика, проверка портов и istio:
+#### Диагностика, проверка портов и istio:
 
-- 'kubectl get virtualService'
-- 'kubectl get svc -n istio-system'
+- `kubectl get virtualService`
+- `kubectl get svc -n istio-system`
   (должен быть порт 30001)
-- 'kubectl get svc -n arch-gur'
+- `kubectl get svc -n arch-gur`
   kafka-manager                 NodePort    10.101.112.105   <none>        9000:30170/TCP
   Для входа в kafka-manager http://arch.homework:30170/
-- 'kubectl port-forward -n arch-gur arch-profiles-deployment-67d58c5b57-x25q4 8080:8000'
+- `kubectl port-forward -n arch-gur arch-profiles-deployment-67d58c5b57-x25q4 8080:8000`
 - http://localhost:8080/swagger-ui/index.html#/kafka-controller/sendString
-- 'kubectl logs -f -n arch-gur arch-profiles-deployment-67d58c5b57-x25q4'  
-- 'kubectl port-forward -n arch-gur redis-ss-0 6379:6379'
-- 'istioctl dashboard kiali'
+- `kubectl logs -f -n arch-gur arch-profiles-deployment-67d58c5b57-x25q4`  
+- `kubectl port-forward -n arch-gur redis-ss-0 6379:6379`
+- `istioctl dashboard kiali`
 
 ---
-### Очистка пространства:
+#### Очистка пространства:
 
-- 'helm uninstall gorelov-arch-project'
-- 'helm uninstall gorelov-arch-auth'
-- 'helm uninstall gorelov-arch-profiles'
-- 'istioctl x uninstall --purge'
-- 'kubectl delete namespace arch-gur'
-- 'kubectl delete namespace istio-system'  
-- 'helm uninstall gorelov-kafka'
-- 'helm uninstall gorelov-redis'
-- 'helm uninstall gorelov-redis-order'
+- `helm uninstall gorelov-arch-project`
+- `helm uninstall gorelov-arch-auth`
+- `helm uninstall gorelov-arch-profiles`
+- `istioctl x uninstall --purge`
+- `kubectl delete namespace arch-gur`
+- `kubectl delete namespace istio-system`  
+- `helm uninstall gorelov-kafka`
+- `helm uninstall gorelov-redis`
+- `helm uninstall gorelov-redis-order`

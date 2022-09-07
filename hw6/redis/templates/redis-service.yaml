@@ -7,8 +7,8 @@ metadata:
     app: {{ .Values.redis.name }}
 spec:
   ports:
-    - port: {{ .Values.redis.port }}
+    - port: 6379
       targetPort: 6379
-  clusterIP: None
+  type: ClusterIP
   selector:
     app: {{ .Values.redis.name }}
