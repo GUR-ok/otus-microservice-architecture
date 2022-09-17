@@ -8,6 +8,16 @@
 - Реляционная БД PostgreSQL
 - Redis для хранения ключей идемпотентности
 
+Особенности работы:
+- В headers (key: idempotency-key) передается ключ идемпотентности (Ключ). Повторные последующие запросы на
+  создание заказа с тем же Ключом возвращают orderId заказа, созданного при первом запросе.
+- При получении запроса на создание заказа, проверяется наличие Ключа в Redis БД, 
+  если Ключ не найден, то он сохраняется в Redis и заказ создается в Postgres БД и возвращается уникальный orderId.
+  Если Ключ найден в Redis, то новый заказ в Postgres не создается, в ответе возвращается orderId уже созданного заказа.
+- В Redis хранится Ключ и oderId идентификатор заказа, созданного с помощью этого Ключа. Это позволяет возвращать 
+  orderId при повторных запросах с одинаковым Ключом.
+- Развернутая в кластере Redis БД служит хранилищем Ключей для всех экземпляров Сервиса Управления Заказом.
+
 #### Инструкция по запуску:
 - `minikube start`
 - `kubectl create namespace arch-gur`  
@@ -21,6 +31,16 @@ kubectl create namespace m && helm repo add ingress-nginx https://kubernetes.git
 
 - `helm install gorelov-redis ./hw6/redis/`
 - `helm install gorelov-arch-order ./hw6/order_deployment/`
+
+#### Тесты:
+
+- `newman run ./hw6/gorelov_hw_6.postman_collection.json --verbose`
+
+#### Результаты тестов:
+![nm_1.png](nm_1.png)
+![nm_2.png](nm_2.png)
+![nm_3.png](nm_3.png)
+![nm_4.png](nm_4.png)
 
 ---
 
