@@ -1,190 +1,53 @@
 {
 	"info": {
-		"_postman_id": "11ab002f-39ca-416d-a19d-01187181335f",
+		"_postman_id": "71ad4e40-d02b-44f1-b8ba-9604127889e4",
 		"name": "gorelov_hw_6",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "20534987"
 	},
 	"item": [
 		{
-			"name": "Auth Login Try",
+			"name": "Create Order",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.collectionVariables.set (\"randomNum\", _.random (1,1000));\r",
-							"pm.collectionVariables.set (\"login\", \"login\"+pm.collectionVariables.get(\"randomNum\"));\r",
+							"var id = JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"order1\", id);\r",
 							"\r",
-							"pm.test(\"Given unexisted login Then status code is 404\", function () {\r",
-							"    pm.response.to.have.status(404);\r",
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
 							"});\r",
 							"\r",
-							"var msg = pm.response.text();\r",
-							"\r",
-							"pm.test(\"Given unexisted login then msg value is expected\", function () {\r",
-							"    pm.expect(msg).to.equal(\"User not found\");\r",
-							"});"
+							"console.log(\"Id заказа при первом запросе \" + id);"
 						],
 						"type": "text/javascript"
 					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"email\": \"gur@mail.ru\",\r\n    \"login\": \"unexistedLogin\",\r\n    \"password\": \"myPassword\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
 				},
-				"url": {
-					"raw": "http://{{baseUrl}}:{{port}}/auth/login",
-					"protocol": "http",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"port": "{{port}}",
-					"path": [
-						"auth",
-						"login"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Auth Register",
-			"event": [
 				{
-					"listen": "test",
+					"listen": "prerequest",
 					"script": {
 						"exec": [
-							"var jsonData = pm.response.json();\r",
-							"pm.collectionVariables.set(\"user_id\", jsonData.userId);\r",
-							"pm.collectionVariables.set(\"profile_id\", jsonData.profileId);\r",
-							"\r",
-							"pm.test(\"When register with new login Then status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});"
+							"pm.collectionVariables.set (\"idempotencyKey\", require('uuid').v4());\r",
+							"pm.collectionVariables.set (\"profileId\", require('uuid').v4());"
 						],
 						"type": "text/javascript"
 					}
 				}
 			],
 			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"email\": \"gur@mail.ru\",\r\n    \"login\": \"{{login}}\",\r\n    \"password\": \"myPassword\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://{{baseUrl}}:{{port}}/auth/register",
-					"protocol": "http",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"port": "{{port}}",
-					"path": [
-						"auth",
-						"register"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Auth Login",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"var jsonData = pm.response.json();\r",
-							"var jsonData = JSON.parse(responseBody);\r",
-							"pm.collectionVariables.set(\"token\", jsonData.token);\r",
-							"pm.collectionVariables.set(\"session\", jsonData.session);\r",
-							"\r",
-							"pm.test(\"When login with correct creds then status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"email\": \"gur@mail.ru\",\r\n    \"login\": \"{{login}}\",\r\n    \"password\": \"myPassword\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://{{baseUrl}}:{{port}}/auth/login",
-					"protocol": "http",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"port": "{{port}}",
-					"path": [
-						"auth",
-						"login"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Kafka Test",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"When test kafka Then status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
 				"method": "POST",
 				"header": [
 					{
-						"key": "x-auth-token",
-						"value": "{{token}}",
-						"type": "text"
-					},
-					{
-						"key": "x-auth-session",
-						"value": "{{session}}",
+						"key": "idempotency-key",
+						"value": "{{idempotencyKey}}",
 						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "",
+					"raw": "{\r\n    \"productQuantity\" : 2\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -192,36 +55,23 @@
 					}
 				},
 				"url": {
-					"raw": "http://{{baseUrl}}:{{port}}/profiles/kafka?topic=topic1&keyFrom=1&keyTo=10&data=payload&count=1",
+					"raw": "http://{{baseUrl}}/?profileId={{profileId}}",
 					"protocol": "http",
 					"host": [
 						"{{baseUrl}}"
 					],
-					"port": "{{port}}",
 					"path": [
-						"profiles",
-						"kafka"
+						""
 					],
 					"query": [
 						{
-							"key": "topic",
-							"value": "topic1"
+							"key": "",
+							"value": "asfa",
+							"disabled": true
 						},
 						{
-							"key": "keyFrom",
-							"value": "1"
-						},
-						{
-							"key": "keyTo",
-							"value": "10"
-						},
-						{
-							"key": "data",
-							"value": "payload"
-						},
-						{
-							"key": "count",
-							"value": "1"
+							"key": "profileId",
+							"value": "{{profileId}}"
 						}
 					]
 				}
@@ -229,15 +79,115 @@
 			"response": []
 		},
 		{
-			"name": "Auth Register With Same Login",
+			"name": "Get Created Order",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"When register with existed login Then status code is 400\", function () {\r",
-							"    pm.response.to.have.status(400);\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"var productQuantity = (jsonData.productQuantity);\r",
+							"\r",
+							"pm.test(\"При запросе созданного заказа количество товара соответствует заданному значению\", function () {\r",
+							"    pm.expect(productQuantity).to.equal(2)\r",
 							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{baseUrl}}/{{order1}}?profileId={{profileId}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"{{order1}}"
+					],
+					"query": [
+						{
+							"key": "profileId",
+							"value": "{{profileId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Orders By ProfileId",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var data = pm.response.json().length;\r",
+							"\r",
+							"pm.test(\"Запрос на получение всех заказов профиля выдает 1 заказ\", function () {\r",
+							"    pm.expect(data).to.equal(1)\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{baseUrl}}/?profileId={{profileId}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						""
+					],
+					"query": [
+						{
+							"key": "profileId",
+							"value": "{{profileId}}"
+						},
+						{
+							"key": "",
+							"value": "asfa",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Order (Same idempotencyKey)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"var orderId = JSON.parse(responseBody);\r",
+							"\r",
+							"pm.test(\"Запрос на создание заказа с таким же idempotencyKey возвращает id уже созданного заказа при первом запросе\", function () {\r",
+							"    pm.expect(orderId).to.equal(pm.collectionVariables.get(\"order1\"))\r",
+							"});\r",
+							"\r",
+							"console.log(\"Id заказа при повторном запросе с тем же idempotencyKey \" + orderId);"
 						],
 						"type": "text/javascript"
 					}
@@ -245,10 +195,16 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "idempotency-key",
+						"value": "{{idempotencyKey}}",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"email\": \"gur@mail.ru\",\r\n    \"login\": \"{{login}}\",\r\n    \"password\": \"myPassword\"\r\n}",
+					"raw": "{\r\n    \"productQuantity\" : 999\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -256,22 +212,31 @@
 					}
 				},
 				"url": {
-					"raw": "http://{{baseUrl}}:{{port}}/auth/register",
+					"raw": "http://{{baseUrl}}/?profileId={{profileId}}",
 					"protocol": "http",
 					"host": [
 						"{{baseUrl}}"
 					],
-					"port": "{{port}}",
 					"path": [
-						"auth",
-						"register"
+						""
+					],
+					"query": [
+						{
+							"key": "profileId",
+							"value": "{{profileId}}"
+						},
+						{
+							"key": "",
+							"value": "asfa",
+							"disabled": true
+						}
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "jwks.json",
+			"name": "Get Order",
 			"event": [
 				{
 					"listen": "test",
@@ -279,6 +244,13 @@
 						"exec": [
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"var productQuantity = (jsonData.productQuantity);\r",
+							"\r",
+							"pm.test(\"При запросе созданного заказа количество товара соответствует заданному значению при первом запросе\", function () {\r",
+							"    pm.expect(productQuantity).to.equal(2)\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -286,95 +258,42 @@
 				}
 			],
 			"request": {
-				"auth": {
-					"type": "noauth"
-				},
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://{{baseUrl}}:{{port}}/auth/.well-known/jwks.json",
+					"raw": "http://{{baseUrl}}/{{order1}}?profileId={{profileId}}",
 					"protocol": "http",
 					"host": [
 						"{{baseUrl}}"
 					],
-					"port": "{{port}}",
 					"path": [
-						"auth",
-						".well-known",
-						"jwks.json"
+						"{{order1}}"
+					],
+					"query": [
+						{
+							"key": "profileId",
+							"value": "{{profileId}}"
+						}
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Read Profile Valid JWT",
+			"name": "Get Orders By ProfileId",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
-							"var jsonData = pm.response.json();\r",
-							"var fullName = (jsonData.fullName);\r",
-							"var age = (jsonData.age);\r",
-							"\r",
 							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
 							"});\r",
 							"\r",
-							"pm.test(\"Assert new profile fullName is null\", function () {\r",
-							"    pm.expect(fullName).null;\r",
-							"});\r",
+							"var data = pm.response.json().length;\r",
 							"\r",
-							"pm.test(\"Assert new profile age is null\", function () {\r",
-							"    pm.expect(age).null;\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "GET",
-				"header": [
-					{
-						"key": "x-auth-token",
-						"value": "{{token}}",
-						"type": "text"
-					},
-					{
-						"key": "x-auth-session",
-						"value": "{{session}}",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "http://{{baseUrl}}:{{port}}/profiles/{{profile_id}}",
-					"protocol": "http",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"port": "{{port}}",
-					"path": [
-						"profiles",
-						"{{profile_id}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Read Profile Invalid JWT",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 403\", function () {\r",
-							"    pm.response.to.have.status(403);\r",
+							"pm.test(\"Запрос на получение всех заказов профиля выдает 1 заказ\", function () {\r",
+							"    pm.expect(data).to.equal(1)\r",
 							"});\r",
 							""
 						],
@@ -383,200 +302,58 @@
 				}
 			],
 			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "GET",
-				"header": [
-					{
-						"key": "x-auth-token",
-						"value": "{{token}}invalid_token_here",
-						"type": "text"
-					},
-					{
-						"key": "x-auth-session",
-						"value": "{{session}}",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "http://{{baseUrl}}:{{port}}/profiles/{{profile_id}}",
-					"protocol": "http",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"port": "{{port}}",
-					"path": [
-						"profiles",
-						"{{profile_id}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Read Profile No JWT",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 403\", function () {\r",
-							"    pm.response.to.have.status(403);\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://{{baseUrl}}:{{port}}/profiles/{{profile_id}}",
+					"raw": "http://{{baseUrl}}/?profileId={{profileId}}",
 					"protocol": "http",
 					"host": [
 						"{{baseUrl}}"
 					],
-					"port": "{{port}}",
 					"path": [
-						"profiles",
-						"{{profile_id}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Update Profile Valid JWT",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "PATCH",
-				"header": [
-					{
-						"key": "x-auth-token",
-						"value": "{{token}}",
-						"type": "text"
-					},
-					{
-						"key": "x-auth-session",
-						"value": "{{session}}",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"fullName\": \"{{new_fullName}}\",\r\n    \"age\": {{new_age}}\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+						""
+					],
+					"query": [
+						{
+							"key": "",
+							"value": "asfa",
+							"disabled": true
+						},
+						{
+							"key": "profileId",
+							"value": "{{profileId}}"
 						}
-					}
-				},
-				"url": {
-					"raw": "http://{{baseUrl}}:{{port}}/profiles/{{profile_id}}",
-					"protocol": "http",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"port": "{{port}}",
-					"path": [
-						"profiles",
-						"{{profile_id}}"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Read UpdatedProfile Valid JWT",
+			"name": "Create Order Other Idempotency Key",
 			"event": [
 				{
-					"listen": "test",
+					"listen": "prerequest",
 					"script": {
 						"exec": [
-							"var jsonData = pm.response.json();\r",
-							"var fullName = (jsonData.fullName);\r",
-							"var age = (jsonData.age);\r",
-							"\r",
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Assert firstName value is correct\", function () {\r",
-							"    pm.expect(fullName).to.equal(pm.collectionVariables.get(\"new_fullName\"))\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Assert lastName value is correct\", function () {\r",
-							"    pm.expect(age).to.equal(parseInt(pm.collectionVariables.get(\"new_age\")))\r",
-							"});"
+							"pm.collectionVariables.set (\"idempotencyKey\", require('uuid').v4());"
 						],
 						"type": "text/javascript"
 					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "noauth"
 				},
-				"method": "GET",
-				"header": [
-					{
-						"key": "x-auth-token",
-						"value": "{{token}}",
-						"type": "text"
-					},
-					{
-						"key": "x-auth-session",
-						"value": "{{session}}",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "http://{{baseUrl}}:{{port}}/profiles/{{profile_id}}",
-					"protocol": "http",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"port": "{{port}}",
-					"path": [
-						"profiles",
-						"{{profile_id}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Auth Register Second User",
-			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
-							"var jsonData = pm.response.json();\r",
-							"pm.collectionVariables.set(\"profile_id_user2\", jsonData.profileId);\r",
+							"var id = JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"order2\", id);\r",
 							"\r",
-							"pm.test(\"When register with new login Then status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"console.log(\"Id второго заказа \" + id);\r",
+							"pm.test(\"При измененном idempotencyKey id созданного заказа отличается от id в прошлом запросе\", function () {\r",
+							"    pm.expect(pm.collectionVariables.get(\"order1\")).to.not.equal(pm.collectionVariables.get(\"order2\"))\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -585,10 +362,16 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "idempotency-key",
+						"value": "{{idempotencyKey}}",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"email\": \"gur@mail.ru\",\r\n    \"login\": \"{{login}}2\",\r\n    \"password\": \"myPassword\"\r\n}",
+					"raw": "{\r\n    \"productQuantity\" : 3\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -596,81 +379,40 @@
 					}
 				},
 				"url": {
-					"raw": "http://{{baseUrl}}:{{port}}/auth/register",
+					"raw": "http://{{baseUrl}}/?profileId={{profileId}}",
 					"protocol": "http",
 					"host": [
 						"{{baseUrl}}"
 					],
-					"port": "{{port}}",
 					"path": [
-						"auth",
-						"register"
+						""
+					],
+					"query": [
+						{
+							"key": "profileId",
+							"value": "{{profileId}}"
+						}
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Auth Login Second User",
+			"name": "Get Order 2",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
-							"var jsonData = pm.response.json();\r",
-							"pm.collectionVariables.set(\"token_user2\", jsonData.token);\r",
-							"pm.collectionVariables.set(\"session\", jsonData.session);\r",
-							"\r",
-							"pm.test(\"When login with correct creds then status code is 200\", function () {\r",
+							"pm.test(\"Status code is 200\", function () {\r",
 							"    pm.response.to.have.status(200);\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"email\": \"gur@mail.ru\",\r\n    \"login\": \"{{login}}2\",\r\n    \"password\": \"myPassword\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://{{baseUrl}}:{{port}}/auth/login",
-					"protocol": "http",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"port": "{{port}}",
-					"path": [
-						"auth",
-						"login"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Read Profile Valid JWT Other User",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 401\", function () {\r",
-							"    pm.response.to.have.status(401);\r",
 							"});\r",
 							"\r",
-							"var msg = pm.response.text();\r",
+							"var jsonData = pm.response.json();\r",
+							"var productQuantity = (jsonData.productQuantity);\r",
 							"\r",
-							"pm.test(\"When try to read other profile then return unauthorized\", function () {\r",
-							"    pm.expect(msg).to.equal(\"Unauthorized!\");\r",
+							"pm.test(\"При запросе созданного заказа количество товара соответствует заданному значению\", function () {\r",
+							"    pm.expect(productQuantity).to.equal(3)\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -678,52 +420,42 @@
 				}
 			],
 			"request": {
-				"auth": {
-					"type": "noauth"
-				},
 				"method": "GET",
-				"header": [
-					{
-						"key": "x-auth-token",
-						"value": "{{token_user2}}",
-						"type": "text"
-					},
-					{
-						"key": "x-auth-session",
-						"value": "{{session}}",
-						"type": "text"
-					}
-				],
+				"header": [],
 				"url": {
-					"raw": "http://{{baseUrl}}:{{port}}/profiles/{{profile_id}}",
+					"raw": "http://{{baseUrl}}/{{order2}}?profileId={{profileId}}",
 					"protocol": "http",
 					"host": [
 						"{{baseUrl}}"
 					],
-					"port": "{{port}}",
 					"path": [
-						"profiles",
-						"{{profile_id}}"
+						"{{order2}}"
+					],
+					"query": [
+						{
+							"key": "profileId",
+							"value": "{{profileId}}"
+						}
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Update Profile Valid JWT Other user",
+			"name": "Get Orders By ProfileId",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Status code is 401\", function () {\r",
-							"    pm.response.to.have.status(401);\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
 							"});\r",
 							"\r",
-							"var msg = pm.response.text();\r",
+							"var data = pm.response.json().length;\r",
 							"\r",
-							"pm.test(\"When try to read other profile then return unauthorized\", function () {\r",
-							"    pm.expect(msg).to.equal(\"Unauthorized!\");\r",
+							"pm.test(\"Запрос на получение всех заказов профиля выдает 2 заказа\", function () {\r",
+							"    pm.expect(data).to.equal(2)\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -731,41 +463,27 @@
 				}
 			],
 			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "PATCH",
-				"header": [
-					{
-						"key": "x-auth-token",
-						"value": "{{token_user2}}",
-						"type": "text"
-					},
-					{
-						"key": "x-auth-session",
-						"value": "{{session}}",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"fullName\": \"{{new_fullName}}\",\r\n    \"age\": {{new_age}}\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
+				"method": "GET",
+				"header": [],
 				"url": {
-					"raw": "http://{{baseUrl}}:{{port}}/profiles/{{profile_id}}",
+					"raw": "http://{{baseUrl}}/?profileId={{profileId}}",
 					"protocol": "http",
 					"host": [
 						"{{baseUrl}}"
 					],
-					"port": "{{port}}",
 					"path": [
-						"profiles",
-						"{{profile_id}}"
+						""
+					],
+					"query": [
+						{
+							"key": "profileId",
+							"value": "{{profileId}}"
+						},
+						{
+							"key": "",
+							"value": "asfa",
+							"disabled": true
+						}
 					]
 				}
 			},
@@ -795,67 +513,28 @@
 	"variable": [
 		{
 			"key": "baseUrl",
-			"value": "arch.homework",
+			"value": "arch.homework/otusapp/gur-ok",
 			"type": "string"
 		},
 		{
-			"key": "port",
-			"value": "30001",
-			"type": "string"
-		},
-		{
-			"key": "user_id",
+			"key": "profileId",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"key": "login",
+			"key": "order1",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"key": "token",
+			"key": "order2",
 			"value": "",
 			"type": "string"
 		},
 		{
-			"key": "randomNum",
+			"key": "idempotencyKey",
 			"value": "",
 			"type": "string"
-		},
-		{
-			"key": "profile_id",
-			"value": "",
-			"type": "string"
-		},
-		{
-			"key": "new_fullName",
-			"value": "edited_name",
-			"type": "string"
-		},
-		{
-			"key": "new_age",
-			"value": "35",
-			"type": "string"
-		},
-		{
-			"key": "profile_id_user2",
-			"value": "",
-			"type": "string"
-		},
-		{
-			"key": "token_user2",
-			"value": "",
-			"type": "string"
-		},
-		{
-			"key": "session",
-			"value": "",
-			"type": "string"
-		},
-		{
-			"key": "x-auth-session",
-			"value": ""
 		}
 	]
 }

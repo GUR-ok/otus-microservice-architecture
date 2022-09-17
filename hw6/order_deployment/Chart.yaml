@@ -1,7 +1,7 @@
 apiVersion: v2
-name: otus-gorelov-project
+name: arch-order
 version: 1.0.0
-description: ArchHomework Redis
+description: ArchHomework Profiles
 type: application
 sources:
   - https://github.com/GUR-ok/arch-order

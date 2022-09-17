@@ -1,6 +1,8 @@
-Домашнее задание №5
+###Домашнее задание №5. Authorization
 
-<u>Описание приложения:</u>
+Реализована авторизации по jwt через Istio.
+
+###Описание приложения:
 
 ![img.png](img.png)
 ![sequence_diag.png](sequence_diag.png)
@@ -28,37 +30,39 @@
    попытки запроса чужого профиля запрос считается неавторизованным. Верификация и проверка подписи jwt в СУП не
    производится, за верификацию отвечает Istio.
 
-<u>Инструкция по запуску:</u>
+#### Инструкция по запуску:
 
-- minikube start
-- kubectl delete namespace ingress-nginx
-- kubectl create namespace arch-gur
-- istioctl install --set profile=demo -y
-- istioctl manifest apply -f ./hw5/istio/istio-values.yaml
-- helm install gorelov-arch-hw5 ./hw5/istio/
-- helm install gorelov-arch-auth ./hw5/auth_deployment/
-- helm install gorelov-arch-profiles ./hw5/profiles_deployment/
+- `minikube start`
+- `kubectl delete namespace ingress-nginx`
+- `kubectl delete ingressClass nginx`  
+- `kubectl create namespace arch-gur`
+- `istioctl install --set profile=demo -y`
+- `istioctl manifest apply -f ./hw5/istio/istio-values.yaml`
+- `helm install gorelov-arch-hw5 ./hw5/istio/`
+- `helm install gorelov-arch-auth ./hw5/auth_deployment/`
+- `helm install gorelov-arch-profiles ./hw5/profiles_deployment/`
 
-<u>Тесты:</u>
+#### Тесты:
 
-- newman run ./hw5/gorelov_hw_5.postman_collection.json --verbose
+- `newman run ./hw5/gorelov_hw_5.postman_collection.json --verbose`
 
-<u>Проверка портов и istio:</u>
+#### Проверка портов и istio:
 
-- kubectl get virtualService
-- kubectl get svc -n istio-system
+- `kubectl get virtualService`
+- `kubectl get svc -n istio-system`
   (должен быть порт 30001)
 
 ---
-<u>Очистка пространства:</u>
+#### Очистка пространства:
 
-- helm uninstall gorelov-arch-hw5
-- helm uninstall gorelov-arch-auth
-- helm uninstall gorelov-arch-profiles
-- istioctl x uninstall --purge
-- kubectl delete namespace arch-gur
+- `helm uninstall gorelov-arch-hw5`
+- `helm uninstall gorelov-arch-auth`
+- `helm uninstall gorelov-arch-profiles`
+- `istioctl x uninstall --purge`
+- `kubectl delete namespace arch-gur`
+- `kubectl delete namespace istio-system` 
 
-Результаты тестов:
+#### Результаты тестов:
 ![nm_1.png](nm_1.png)
 ![nm_2.png](nm_2.png)
 ![nm_3.png](nm_3.png)

@@ -1,13 +1,13 @@
 config:
-  name: arch-profiles-configmap
+  name: arch-order-configmap
   port: 8000
   ddl: validate
 secret:
-  name: arch-profiles-secret
+  name: arch-order-secret
 deployment:
   app:
     type: NodePort
-    image: gurok/arch_profiles_2
+    image: gurok/arch_order
     port: 8000
     replicas: 2
   db:
@@ -17,15 +17,15 @@ deployment:
     replicas: 1
 service:
   app:
-    name: arch-profiles-service
+    name: arch-order-service
     type: NodePort
     protocol: TCP
     port: 9000
   db:
-    name: postgresql-profiles-service
-    host: "postgresql-profiles-service"
+    name: postgresql-order-service
+    host: "postgresql-order-service"
     type: ClusterIP
     port: 5432
     sport: "5432"
-    dbname: arch_profiles_db
+    dbname: arch_order_db
     dbschema: public
