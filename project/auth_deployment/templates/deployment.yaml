@@ -74,7 +74,7 @@ spec:
                     key: SPRING_DATASOURCE_PASSWORD
               - name: REDIS_SERVER
                 valueFrom:
-                  secretKeyRef:
+                  configMapKeyRef:
                     name: {{ .Values.config.name }}
                     key: REDIS_SERVER
               - name: REDIS_PASSWORD

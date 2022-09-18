@@ -1,10 +1,10 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ .Values.redis.name }}-statefulset
+  name: {{ .Values.redis.name }}-ss
   namespace: arch-gur
 spec:
-  serviceName: {{ .Values.redis.name }}-service
+  serviceName: "redis-service"
   replicas: 1
   selector:
     matchLabels:
@@ -37,11 +37,11 @@ spec:
             - name: config-map
               mountPath: /mnt/
       containers:
-        - name: redis
+        - name: {{ .Values.redis.name }}
           image: redis:latest
           ports:
             - containerPort: 6379
-              name: redis-ss
+              name: {{ .Values.redis.name }}-ss
           command:
             - redis-server
             - "/etc/redis-config.conf"
@@ -53,7 +53,7 @@ spec:
       volumes:
         - name: config-map
           configMap:
-            name: redis-ss-configuration
+            name: {{ .Values.redis.name }}-configmap
   volumeClaimTemplates:
     - metadata:
         name: redis-claim

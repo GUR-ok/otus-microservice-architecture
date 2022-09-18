@@ -6,7 +6,7 @@ secret:
   name: arch-auth-secret
 deployment:
   app:
-    image: gurok/arch_auth_2
+    image: gurok/arch_auth:project.2
     port: 8000
     replicas: 2
     jwtsecret: secret
@@ -28,5 +28,5 @@ service:
     sport: "5432"
     dbname: arch_auth_db
     dbschema: public
-  redis:
-    name: redis-service
+redis:
+  name: redis
