@@ -62,6 +62,7 @@ II. Создание заказа
 - `helm install gorelov-arch-profiles ./project/profiles_deployment/`
 
 #### Диагностика, проверка портов и istio:
+![cluster.png](cluster.png)
 
 - `kubectl get virtualService`
 - `kubectl get svc -n istio-system`

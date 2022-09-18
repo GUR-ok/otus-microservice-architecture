@@ -1,8 +1,8 @@
-###Домашнее задание №5. Authorization
+### Домашнее задание №5. Authorization
 
 Реализована авторизации по jwt через Istio.
 
-###Описание приложения:
+### Описание приложения:
 
 ![img.png](img.png)
 ![sequence_diag.png](sequence_diag.png)
