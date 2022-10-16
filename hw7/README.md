@@ -47,7 +47,9 @@
 - Сервис Уведомлений
 
 #### Спецификация OpenAPI
-//todo
+[openapi.yaml](https://github.com/GUR-ok/otus-microservice-architecture/tree/master/hw7/openapi.yaml)
+![img.png](img.png)
+![img_1.png](img_1.png)
 
 ---
 
