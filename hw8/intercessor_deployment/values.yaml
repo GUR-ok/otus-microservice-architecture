@@ -1,0 +1,32 @@
+config:
+  name: arch-intercessor-configmap
+  port: 8000
+  ddl: validate
+secret:
+  name: arch-intercessor-secret
+deployment:
+  app:
+    image: gurok/arch_intercessor
+    port: 8000
+    replicas: 2
+  db:
+    image: postgres:latest
+    port: 5432
+    replicas: 1
+service:
+  app:
+    name: arch-intercessor-service
+    type: ClusterIP
+    protocol: TCP
+    port: 9000
+  db:
+    name: postgresql-intercessor-service
+    host: "postgresql-intercessor-service"
+    type: ClusterIP
+    port: 5432
+    sport: "5432"
+    dbname: arch_intercessor_db
+    dbschema: public
+ingress:
+  name: otus-hw08-ingress
+  host: arch.homework
