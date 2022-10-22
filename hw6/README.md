@@ -42,10 +42,10 @@ kubectl create namespace m && helm repo add ingress-nginx https://kubernetes.git
   43/networking/v1/ingresses?timeout=10s": dial tcp 10.111.50.42:443: connect: connection refused
 
   необходимо выполнить:
-    ```
-    get ValidatingWebhookConfiguration
-    kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission
-    ```  
+  ```
+  kubectl get ValidatingWebhookConfiguration
+  kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission
+  ```  
 - дождаться поднятия подов
 
 ---
