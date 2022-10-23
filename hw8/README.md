@@ -3,6 +3,7 @@
 Релизовать распределенную транзакцию в микросервисной архитектуре
 
 ---
+![img.png](img.png)
 
 #### Описание приложения:
 Приложение сосотоит из:
@@ -22,8 +23,9 @@
   kubectl delete ingressClass nginx
   kubectl create namespace m && helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx/ && helm repo update && helm install nginx ingress-nginx/ingress-nginx --namespace m -f nginx-ingress.yaml
   ```
-
-- `helm install gorelov-intercessor ./deployment/app/`
+  
+- `helm install gorelov-kafka ./hw8/kafka/`
+- `helm install gorelov-intercessor ./hw8/intercessor_deployment/`
   `kubectl get pods -n arch-gur`
 - В случае ошибки при деплое приложения через helm
 
@@ -58,6 +60,7 @@
 #### Очистка пространства:
 
 - `helm uninstall gorelov-intercessor`
+- `helm uninstall gorelov-kafka`
 - `helm uninstall nginx -n m`
 - `kubectl delete namespace arch-gur`
 - `kubectl delete namespace m`
