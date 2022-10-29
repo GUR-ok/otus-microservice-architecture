@@ -26,6 +26,12 @@
   
 - `helm install gorelov-kafka ./hw8/kafka/`
 - `helm install gorelov-intercessor ./hw8/intercessor_deployment/`
+- `helm install gorelov-redis-order ./hw8/redis_order/`
+- `helm install gorelov-arch-order ./hw8/order_deployment/`
+- `helm install gorelov-arch-store ./hw8/store_deployment/`
+- `helm install gorelov-arch-billing ./hw8/billing_deployment/`
+- `helm install gorelov-arch-delivery ./hw8/delivery_deployment/`
+
   `kubectl get pods -n arch-gur`
 - В случае ошибки при деплое приложения через helm
 
@@ -61,6 +67,11 @@
 
 - `helm uninstall gorelov-intercessor`
 - `helm uninstall gorelov-kafka`
+- `helm uninstall gorelov-arch-order`
+- `helm uninstall gorelov-arch-store`
+- `helm uninstall gorelov-arch-billing`
+- `helm uninstall gorelov-arch-delivery`
+- `helm uninstall gorelov-redis-order`
 - `helm uninstall nginx -n m`
 - `kubectl delete namespace arch-gur`
 - `kubectl delete namespace m`

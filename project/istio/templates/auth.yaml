@@ -49,7 +49,7 @@ spec:
                 uri: http://arch-auth-service.arch-gur.svc.cluster.local
                 cluster: ext_authz
                 timeout: 10s
-              path_prefix: "/auth/istio"
+              path_prefix: "/auth/istio" # Префикс, добавляемый к урлу запроса для попадания на эндпоинты с фильтрами в Сервисе Авторизации
               authorization_request:
                 allowed_headers:
                   patterns:

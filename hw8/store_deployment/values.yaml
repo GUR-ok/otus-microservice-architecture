@@ -1,0 +1,32 @@
+config:
+  name: arch-store-configmap
+  port: 8000
+  ddl: validate
+secret:
+  name: arch-store-secret
+deployment:
+  app:
+    image: gurok/arch_store
+    port: 8000
+    replicas: 1
+  db:
+    image: postgres:latest
+    port: 5432
+    replicas: 1
+service:
+  app:
+    name: arch-store-service
+    type: ClusterIP
+    protocol: TCP
+    port: 9000
+  db:
+    name: postgresql-store-service
+    host: "postgresql-store-service"
+    type: ClusterIP
+    port: 5432
+    sport: "5432"
+    dbname: arch_store_db
+    dbschema: public
+ingress:
+  name: otus-store-ingress
+  host: arch.homework
