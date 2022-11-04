@@ -6,7 +6,7 @@ secret:
   name: arch-order-secret
 deployment:
   app:
-    image: gurok/arch_order
+    image: gurok/arch_order_2
     port: 8000
     replicas: 1
   db:
@@ -16,7 +16,7 @@ deployment:
 service:
   app:
     name: arch-order-service
-    type: NodePort
+    type: ClusterIP
     protocol: TCP
     port: 9000
   db:

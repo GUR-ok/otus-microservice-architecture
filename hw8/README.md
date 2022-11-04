@@ -7,7 +7,11 @@
 
 #### Описание приложения:
 Приложение сосотоит из:
-- Интерцессор (Сервис Оркестратор) 
+- [Интерцессор (Сервис Оркестратор)](https://github.com/GUR-ok/arch-intercessor)
+- [Сервис Заказа](https://github.com/GUR-ok/arch-order)
+- [Сервис Склада](https://github.com/GUR-ok/arch-store)
+- [Сервис Доставки](https://github.com/GUR-ok/arch-delivery)
+- [Сервис Биллинга](https://github.com/GUR-ok/arch-billing)
 
 ...todo
 
@@ -25,8 +29,8 @@
   ```
   
 - `helm install gorelov-kafka ./hw8/kafka/`
+- `helm install gorelov-redis-order ./hw8/redis_order/`  
 - `helm install gorelov-intercessor ./hw8/intercessor_deployment/`
-- `helm install gorelov-redis-order ./hw8/redis_order/`
 - `helm install gorelov-arch-order ./hw8/order_deployment/`
 - `helm install gorelov-arch-store ./hw8/store_deployment/`
 - `helm install gorelov-arch-billing ./hw8/billing_deployment/`
@@ -44,6 +48,7 @@
     kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission
     ```  
 - дождаться поднятия подов
+- на все поды может не хватать ресурсов, следует запускать по очереди, для экономии ресурсов количетсов реплик сокращено
 
 ---
 
@@ -58,10 +63,13 @@
 ---
 
 #### Проверка и отладка:
+![img_1.png](img_1.png)
+
 - Port-forward:
   `kubectl get pods -n arch-gur`
   `kubectl port-forward -n arch-gur arch-intercessor-deployment-76548647fd-bpxbj 8000:8000`
   `kubectl port-forward -n arch-gur arch-intercessor-postgresql-deployment-0 5432:5432`
+  `kubectl port-forward -n arch-gur arch-order-postgresql-deployment-0 5432:5432`
 
 #### Очистка пространства:
 
