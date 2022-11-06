@@ -1,11 +1,11 @@
-### Домашнее задание №8. Distributed transactions
+## Домашнее задание №8. Distributed transactions
 
 Реализовать распределенную транзакцию в микросервисной архитектуре
 
 ---
 ![img.png](img.png)
 
-#### Описание приложения:
+### Описание приложения:
 Приложение реализаует паттерн "Сага" для построения распределенной транзакции и состоит из:
 - [Интерцессор (Сервис Оркестратор)](https://github.com/GUR-ok/arch-intercessor)
   Сервис под управлением Camunda (встроена в SpringBoot), основывается на bpmn-схеме, 
@@ -43,7 +43,7 @@
 
 ---
 
-#### Инструкция по запуску:
+### Инструкция по запуску:
 - `minikube start --vm-driver virtualbox --no-vtx-check --memory=24Gb --cpus=4 --disk-size=50Gb`
 - `kubectl create namespace arch-gur`
 - Использовать nginx ingress controller установленный через хелм, а не встроенный в minikube:
@@ -78,29 +78,35 @@
 
 ---
 
-#### Тесты:
+### Тесты:
 
 - `newman run ./hw8/gorelov_hw_8.postman_collection.json --verbose`
 
 #### Результаты тестов:
 
-...todo
+ ######Скриншоты с тестами в [папке](./screenshots).
+
+  ![img_1](./screenshots/2022-11-06 23_35_33-Greenshot.png)
 
 ---
 
-#### Проверка и отладка:
+### Проверка и отладка:
 ![img_1.png](img_1.png)
 
 - Port-forward:
-  `kubectl get pods -n arch-gur`
   
-  `kubectl port-forward -n arch-gur arch-intercessor-deployment-76548647fd-bpxbj 8000:8000`
-   Админская панель будет доступна по адресу: http://localhost:8080/camunda/app/admin/default/#/
+  `kubectl get pods -n arch-gur`
+
+  `kubectl port-forward -n arch-gur arch-order-postgresql-deployment-0 5433:5432`
   
   `kubectl port-forward -n arch-gur arch-intercessor-postgresql-deployment-0 5433:5432`
-  `kubectl port-forward -n arch-gur arch-order-postgresql-deployment-0 5433:5432`
+  
+  `kubectl port-forward -n arch-gur arch-intercessor-deployment-76548647fd-bpxbj 8000:8000`
 
-#### Очистка пространства:
+  Админская панель Camunda будет доступна по адресу: http://localhost:8080/camunda/app/admin/default/#/
+  
+   
+### Очистка пространства:
 
 - `helm uninstall gorelov-intercessor`
 - `helm uninstall gorelov-kafka`

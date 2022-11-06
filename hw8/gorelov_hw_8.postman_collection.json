@@ -504,7 +504,15 @@
 									"pm.test(\"Status code is 200\", function () {\r",
 									"    pm.response.to.have.status(200);\r",
 									"});\r",
-									""
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"var balance = (jsonData.balance);\r",
+									"\r",
+									"console.log(\"Баланс на счете: \" + balance)\r",
+									"\r",
+									"pm.test(\"Баланс на счете ненулевой\", function () {\r",
+									"    pm.expect(balance).not.equal(0)\r",
+									"});"
 								],
 								"type": "text/javascript"
 							}
@@ -541,7 +549,7 @@
 					"response": []
 				},
 				{
-					"name": "Get Products Before",
+					"name": "Get Products Quantity Before Order",
 					"event": [
 						{
 							"listen": "test",
@@ -604,6 +612,7 @@
 							"listen": "test",
 							"script": {
 								"exec": [
+									"\r",
 									"var jsonData = pm.response.json();\r",
 									"var processId = (jsonData.processId);\r",
 									"pm.collectionVariables.set(\"processId\", processId);\r",
@@ -612,7 +621,23 @@
 									"    pm.response.to.have.status(200);\r",
 									"});\r",
 									"\r",
-									"console.log(\"Процесс стартовал. Id процесса \" + processId);"
+									"console.log(\"Процесс стартовал. Id процесса \" + processId);\r",
+									"setTimeout(function(){\r",
+									"          console.log(\"Sleeping for 3 seconds before next request.\");\r",
+									"}, 3000);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const moment = require('moment')\r",
+									"let futureDate = pm.variables.replaceIn('{{$randomDateFuture}}')\r",
+									"futureDate = moment(futureDate).format((\"YYYY-MM-DD\"))\r",
+									"pm.collectionVariables.set(\"futureDate\", futureDate);\r",
+									"pm.collectionVariables.set(\"approvedDate\", futureDate);"
 								],
 								"type": "text/javascript"
 							}
@@ -623,7 +648,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"event\":\"NEW_ORDER_RECEIVED\",\r\n    \"productId\":\"{{productId}}\",\r\n    \"productQuantity\":2.0,\r\n    \"deliveryDate\":\"2023-10-29\",\r\n    \"accountId\":\"{{accountId}}\",\r\n    \"deliveryTimeSlot\":\"MORNING\"\r\n}",
+							"raw": "{\r\n    \"event\":\"NEW_ORDER_RECEIVED\",\r\n    \"productId\":\"{{productId}}\",\r\n    \"productQuantity\":2.0,\r\n    \"deliveryDate\":\"{{futureDate}}\",\r\n    \"accountId\":\"{{accountId}}\",\r\n    \"deliveryTimeSlot\":\"MORNING\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -672,6 +697,16 @@
 								],
 								"type": "text/javascript"
 							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
 						}
 					],
 					"protocolProfileBehavior": {
@@ -711,7 +746,127 @@
 					"response": []
 				},
 				{
-					"name": "Get Products After",
+					"name": "Get Delivery",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"var deliveryDate = (jsonData.deliveryDate);\r",
+									"\r",
+									"pm.test(\"Доставка создана с заданной датой\", function () {\r",
+									"    pm.expect(deliveryDate).equal(pm.collectionVariables.get('futureDate'))\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/delivery/delivery?orderId={{orderId}}",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"delivery",
+								"delivery"
+							],
+							"query": [
+								{
+									"key": "orderId",
+									"value": "{{orderId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Account info",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"var balance = (jsonData.balance);\r",
+									"\r",
+									"console.log(\"Баланс на счете: \" + balance)\r",
+									"\r",
+									"pm.test(\"Баланс на счете ненулевой\", function () {\r",
+									"    pm.expect(balance).equal(99600.30)\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/billing/account/{{accountId}}",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"billing",
+								"account",
+								"{{accountId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Products Quantity After Order",
 					"event": [
 						{
 							"listen": "test",
@@ -729,7 +884,7 @@
 									"    pm.expect(productId).not.equal('not found')\r",
 									"});\r",
 									"\r",
-									"pm.test(\"Количестов товара на складе соответствует ожидаемому (8)\", function () {\r",
+									"pm.test(\"Количестов товара на складе изменилось и соответствует ожидаемому (8)\", function () {\r",
 									"    pm.expect(product.quantity).to.equal(8)\r",
 									"});\r",
 									""
@@ -770,16 +925,1669 @@
 			]
 		},
 		{
-			"name": "Store Error",
-			"item": []
+			"name": "Billing Error",
+			"item": [
+				{
+					"name": "Create Product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var id = JSON.parse(responseBody);\r",
+									"pm.collectionVariables.set(\"productId\", id);\r",
+									"\r",
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"console.log(\"На склад добавлен товар\" + id + \" в количестве 10 шт\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"some1\",\r\n    \"description\":\"some description here\",\r\n    \"price\":200.1,\r\n    \"isAvailable\":true,\r\n    \"quantity\":10\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/store/",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"store",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Account",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var id = JSON.parse(responseBody);\r",
+									"pm.collectionVariables.set(\"accountId\", id);\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"console.log(\"Создан новый счет\" + id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/billing/account/create",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"billing",
+								"account",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get account info",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"var balance = (jsonData.balance);\r",
+									"\r",
+									"console.log(\"Баланс на счете: \" + balance)\r",
+									"\r",
+									"pm.test(\"Баланс на счете нулевой\", function () {\r",
+									"    pm.expect(balance).equal(0)\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/billing/account/{{accountId}}",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"billing",
+								"account",
+								"{{accountId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Products Quantity Before Order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var data = pm.response.json();\r",
+									"const product = data.productDataList.find(u => u.id === pm.collectionVariables.get(\"productId\"))\r",
+									"const productId = product ? product.id : 'not found'\r",
+									"\r",
+									"pm.test(\"Товар присутствует на складе\", function () {\r",
+									"    pm.expect(productId).not.equal('not found')\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Количествd товара на складе соответствует заданному (10)\", function () {\r",
+									"    pm.expect(product.quantity).to.equal(10)\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/store/products",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"store",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "StartProcess",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"var processId = (jsonData.processId);\r",
+									"pm.collectionVariables.set(\"processId\", processId);\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"console.log(\"Процесс стартовал. Id процесса \" + processId);\r",
+									"setTimeout(function(){\r",
+									"          console.log(\"Sleeping for 3 seconds before next request.\");\r",
+									"}, 3000);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const moment = require('moment')\r",
+									"let futureDate = pm.variables.replaceIn('{{$randomDateFuture}}')\r",
+									"futureDate = moment(futureDate).format((\"YYYY-MM-DD\"))\r",
+									"pm.collectionVariables.set(\"futureDate\", futureDate);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"event\":\"NEW_ORDER_RECEIVED\",\r\n    \"productId\":\"{{productId}}\",\r\n    \"productQuantity\":2.0,\r\n    \"deliveryDate\":\"{{futureDate}}\",\r\n    \"accountId\":\"{{accountId}}\",\r\n    \"deliveryTimeSlot\":\"MORNING\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/order/events",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"order",
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Orders",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var data = pm.response.json();\r",
+									"const order = data.find(u => u.profileId === pm.collectionVariables.get(\"processId\"))\r",
+									"const orderId = order ? order.id : 'not found'\r",
+									"\r",
+									"pm.collectionVariables.set(\"orderId\", orderId);\r",
+									"\r",
+									"pm.test(\"Заказ присутствует в списке заказов\", function () {\r",
+									"    pm.expect(orderId).not.equal('not found')\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Статус заказа должен быть CANCELED\", function () {\r",
+									"    pm.expect(order.state).to.equal(\"CANCELED\")\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/orders/orders/?profileId={{processId}}",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders",
+								"orders",
+								""
+							],
+							"query": [
+								{
+									"key": "profileId",
+									"value": "{{processId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Delivery",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 500\", function () {\r",
+									"    pm.response.to.have.status(500);\r",
+									"});\r",
+									"\r",
+									"var delivery = pm.response.text();\r",
+									"\r",
+									"pm.test(\"Доставка по orderId отсутствует\", function () {\r",
+									"    pm.expect(delivery).equal('delivery not found')\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/delivery/delivery?orderId={{orderId}}",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"delivery",
+								"delivery"
+							],
+							"query": [
+								{
+									"key": "orderId",
+									"value": "{{orderId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Account info",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"var balance = (jsonData.balance);\r",
+									"\r",
+									"console.log(\"Баланс на счете: \" + balance)\r",
+									"\r",
+									"pm.test(\"Баланс на счете нулевой\", function () {\r",
+									"    pm.expect(balance).equal(0)\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/billing/account/{{accountId}}",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"billing",
+								"account",
+								"{{accountId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Products Quantity After Order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var data = pm.response.json();\r",
+									"const product = data.productDataList.find(u => u.id === pm.collectionVariables.get(\"productId\"))\r",
+									"const productId = product ? product.id : 'not found'\r",
+									"\r",
+									"pm.test(\"Товар присутствует на складе\", function () {\r",
+									"    pm.expect(productId).not.equal('not found')\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Количестов товара на складе не изменилось (10)\", function () {\r",
+									"    pm.expect(product.quantity).to.equal(10)\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/store/products",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"store",
+								"products"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Product Error",
+			"item": [
+				{
+					"name": "Create Product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var id = JSON.parse(responseBody);\r",
+									"pm.collectionVariables.set(\"productId\", id);\r",
+									"\r",
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"console.log(\"На склад добавлен товар\" + id + \" в количестве 0 шт\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"some1\",\r\n    \"description\":\"some description here\",\r\n    \"price\":200.1,\r\n    \"isAvailable\":true,\r\n    \"quantity\":0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/store/",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"store",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Account",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var id = JSON.parse(responseBody);\r",
+									"pm.collectionVariables.set(\"accountId\", id);\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"console.log(\"Создан новый счет\" + id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/billing/account/create",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"billing",
+								"account",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Increase Balance",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/billing/account/{{accountId}}?amount=100000.500",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"billing",
+								"account",
+								"{{accountId}}"
+							],
+							"query": [
+								{
+									"key": "amount",
+									"value": "100000.500"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get account info",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"var balance = (jsonData.balance);\r",
+									"\r",
+									"console.log(\"Баланс на счете: \" + balance)\r",
+									"\r",
+									"pm.test(\"Баланс на счете ненулевой\", function () {\r",
+									"    pm.expect(balance).not.equal(0)\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/billing/account/{{accountId}}",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"billing",
+								"account",
+								"{{accountId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Products Quantity Before Order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var data = pm.response.json();\r",
+									"const product = data.productDataList.find(u => u.id === pm.collectionVariables.get(\"productId\"))\r",
+									"const productId = product ? product.id : 'not found'\r",
+									"\r",
+									"pm.test(\"Товар присутствует на складе\", function () {\r",
+									"    pm.expect(productId).not.equal('not found')\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Количествd товара на складе соответствует заданному (0)\", function () {\r",
+									"    pm.expect(product.quantity).to.equal(0)\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/store/products",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"store",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "StartProcess",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"var processId = (jsonData.processId);\r",
+									"pm.collectionVariables.set(\"processId\", processId);\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"console.log(\"Процесс стартовал. Id процесса \" + processId);\r",
+									"setTimeout(function(){\r",
+									"          console.log(\"Sleeping for 3 seconds before next request.\");\r",
+									"}, 3000);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const moment = require('moment')\r",
+									"let futureDate = pm.variables.replaceIn('{{$randomDateFuture}}')\r",
+									"futureDate = moment(futureDate).format((\"YYYY-MM-DD\"))\r",
+									"pm.collectionVariables.set(\"futureDate\", futureDate);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"event\":\"NEW_ORDER_RECEIVED\",\r\n    \"productId\":\"{{productId}}\",\r\n    \"productQuantity\":2.0,\r\n    \"deliveryDate\":\"{{futureDate}}\",\r\n    \"accountId\":\"{{accountId}}\",\r\n    \"deliveryTimeSlot\":\"MORNING\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/order/events",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"order",
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Orders",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var data = pm.response.json();\r",
+									"const order = data.find(u => u.profileId === pm.collectionVariables.get(\"processId\"))\r",
+									"const orderId = order ? order.id : 'not found'\r",
+									"\r",
+									"pm.collectionVariables.set(\"orderId\", orderId);\r",
+									"\r",
+									"pm.test(\"Заказ присутствует в списке заказов\", function () {\r",
+									"    pm.expect(orderId).not.equal('not found')\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Статус заказа должен быть CANCELED\", function () {\r",
+									"    pm.expect(order.state).to.equal(\"CANCELED\")\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/orders/orders/?profileId={{processId}}",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders",
+								"orders",
+								""
+							],
+							"query": [
+								{
+									"key": "profileId",
+									"value": "{{processId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Delivery",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 500\", function () {\r",
+									"    pm.response.to.have.status(500);\r",
+									"});\r",
+									"\r",
+									"var delivery = pm.response.text();\r",
+									"\r",
+									"pm.test(\"Доставка по orderId отсутствует\", function () {\r",
+									"    pm.expect(delivery).equal('delivery not found')\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/delivery/delivery?orderId={{orderId}}",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"delivery",
+								"delivery"
+							],
+							"query": [
+								{
+									"key": "orderId",
+									"value": "{{orderId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Account info",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"var balance = (jsonData.balance);\r",
+									"\r",
+									"console.log(\"Баланс на счете: \" + balance)\r",
+									"\r",
+									"pm.test(\"Баланс на счете не изменился\", function () {\r",
+									"    pm.expect(balance).equal(100000.50)\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/billing/account/{{accountId}}",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"billing",
+								"account",
+								"{{accountId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Products Quantity After Order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var data = pm.response.json();\r",
+									"const product = data.productDataList.find(u => u.id === pm.collectionVariables.get(\"productId\"))\r",
+									"const productId = product ? product.id : 'not found'\r",
+									"\r",
+									"pm.test(\"Товар присутствует в таблице склада\", function () {\r",
+									"    pm.expect(productId).not.equal('not found')\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Количестов товара на складе не изменилось соответствует ожидаемому (0)\", function () {\r",
+									"    pm.expect(product.quantity).to.equal(0)\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/store/products",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"store",
+								"products"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		},
 		{
 			"name": "Delivery Error",
-			"item": []
-		},
-		{
-			"name": "Billing Error",
-			"item": []
+			"item": [
+				{
+					"name": "Create Product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var id = JSON.parse(responseBody);\r",
+									"pm.collectionVariables.set(\"productId\", id);\r",
+									"\r",
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"console.log(\"На склад добавлен товар\" + id + \" в количестве 10 шт\");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"some1\",\r\n    \"description\":\"some description here\",\r\n    \"price\":200.1,\r\n    \"isAvailable\":true,\r\n    \"quantity\":10\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/store/",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"store",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Account",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var id = JSON.parse(responseBody);\r",
+									"pm.collectionVariables.set(\"accountId\", id);\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"console.log(\"Создан новый счет\" + id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/billing/account/create",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"billing",
+								"account",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Increase Balance",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/billing/account/{{accountId}}?amount=100000.500",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"billing",
+								"account",
+								"{{accountId}}"
+							],
+							"query": [
+								{
+									"key": "amount",
+									"value": "100000.500"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get account info",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"var balance = (jsonData.balance);\r",
+									"\r",
+									"console.log(\"Баланс на счете: \" + balance)\r",
+									"\r",
+									"pm.test(\"Баланс на счете ненулевой\", function () {\r",
+									"    pm.expect(balance).not.equal(0)\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/billing/account/{{accountId}}",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"billing",
+								"account",
+								"{{accountId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Products Quantity Before Order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var data = pm.response.json();\r",
+									"const product = data.productDataList.find(u => u.id === pm.collectionVariables.get(\"productId\"))\r",
+									"const productId = product ? product.id : 'not found'\r",
+									"\r",
+									"pm.test(\"Товар присутствует на складе\", function () {\r",
+									"    pm.expect(productId).not.equal('not found')\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Количество товара на складе соответствует заданному (10)\", function () {\r",
+									"    pm.expect(product.quantity).to.equal(10)\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/store/products",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"store",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "StartProcess",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"var processId = (jsonData.processId);\r",
+									"pm.collectionVariables.set(\"processId\", processId);\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"console.log(\"Процесс стартовал. Id процесса \" + processId);\r",
+									"setTimeout(function(){\r",
+									"          console.log(\"Sleeping for 3 seconds before next request.\");\r",
+									"}, 3000);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"event\":\"NEW_ORDER_RECEIVED\",\r\n    \"productId\":\"{{productId}}\",\r\n    \"productQuantity\":2.0,\r\n    \"deliveryDate\":\"{{approvedDate}}\",\r\n    \"accountId\":\"{{accountId}}\",\r\n    \"deliveryTimeSlot\":\"MORNING\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/order/events",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"order",
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Orders",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var data = pm.response.json();\r",
+									"const order = data.find(u => u.profileId === pm.collectionVariables.get(\"processId\"))\r",
+									"const orderId = order ? order.id : 'not found'\r",
+									"\r",
+									"pm.collectionVariables.set(\"orderId\", orderId);\r",
+									"\r",
+									"pm.test(\"Заказ присутствует в списке заказов\", function () {\r",
+									"    pm.expect(orderId).not.equal('not found')\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Статус заказа должен быть CANCELED\", function () {\r",
+									"    pm.expect(order.state).to.equal(\"CANCELED\")\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/orders/orders/?profileId={{processId}}",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders",
+								"orders",
+								""
+							],
+							"query": [
+								{
+									"key": "profileId",
+									"value": "{{processId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Delivery",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 500\", function () {\r",
+									"    pm.response.to.have.status(500);\r",
+									"});\r",
+									"\r",
+									"var delivery = pm.response.text();\r",
+									"\r",
+									"pm.test(\"Доставка по orderId отсутствует\", function () {\r",
+									"    pm.expect(delivery).equal('delivery not found')\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/delivery/delivery?orderId={{orderId}}",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"delivery",
+								"delivery"
+							],
+							"query": [
+								{
+									"key": "orderId",
+									"value": "{{orderId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Account info",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"var balance = (jsonData.balance);\r",
+									"\r",
+									"console.log(\"Баланс на счете: \" + balance)\r",
+									"\r",
+									"pm.test(\"Баланс на счете не изменился\", function () {\r",
+									"    pm.expect(balance).equal(100000.50)\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/billing/account/{{accountId}}",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"billing",
+								"account",
+								"{{accountId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Products Quantity After Order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var data = pm.response.json();\r",
+									"const product = data.productDataList.find(u => u.id === pm.collectionVariables.get(\"productId\"))\r",
+									"const productId = product ? product.id : 'not found'\r",
+									"\r",
+									"pm.test(\"Товар присутствует на складе\", function () {\r",
+									"    pm.expect(productId).not.equal('not found')\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Количестов товара на складе не изменилось (10)\", function () {\r",
+									"    pm.expect(product.quantity).to.equal(10)\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/store/products",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"store",
+								"products"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"event": [
@@ -824,6 +2632,15 @@
 		{
 			"key": "productId",
 			"value": ""
+		},
+		{
+			"key": "futureDate",
+			"value": ""
+		},
+		{
+			"key": "approvedDate",
+			"value": "",
+			"type": "string"
 		}
 	]
 }
