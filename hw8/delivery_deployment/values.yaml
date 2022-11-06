@@ -1,0 +1,32 @@
+config:
+  name: arch-delivery-configmap
+  port: 8000
+  ddl: validate
+secret:
+  name: arch-delivery-secret
+deployment:
+  app:
+    image: gurok/arch_delivery
+    port: 8000
+    replicas: 1
+  db:
+    image: postgres:latest
+    port: 5432
+    replicas: 1
+service:
+  app:
+    name: arch-delivery-service
+    type: ClusterIP
+    protocol: TCP
+    port: 9000
+  db:
+    name: postgresql-delivery-service
+    host: "postgresql-delivery-service"
+    type: ClusterIP
+    port: 5432
+    sport: "5432"
+    dbname: arch_delivery_db
+    dbschema: public
+ingress:
+  name: otus-delivery-ingress
+  host: arch.homework
