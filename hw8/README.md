@@ -1,24 +1,50 @@
 ### Домашнее задание №8. Distributed transactions
 
-Релизовать распределенную транзакцию в микросервисной архитектуре
+Реализовать распределенную транзакцию в микросервисной архитектуре
 
 ---
 ![img.png](img.png)
 
 #### Описание приложения:
-Приложение сосотоит из:
+Приложение реализаует паттерн "Сага" для построения распределенной транзакции и состоит из:
 - [Интерцессор (Сервис Оркестратор)](https://github.com/GUR-ok/arch-intercessor)
-- [Сервис Заказа](https://github.com/GUR-ok/arch-order)
-- [Сервис Склада](https://github.com/GUR-ok/arch-store)
-- [Сервис Доставки](https://github.com/GUR-ok/arch-delivery)
-- [Сервис Биллинга](https://github.com/GUR-ok/arch-billing)
+  Сервис под управлением Camunda (встроена в SpringBoot), основывается на bpmn-схеме, 
+  к которой привязаны java-делегаты. Интеграция с другими сервисами осуществляется как по REST-api, 
+  так и через брокеры сообщений. Входящие запросы - по HTTP.
+  Отмена локальных транзакций в микросервисах осуществляется посредством компенсирующих вызовов (паттерн "Сага").
+  В случае возникновения исключений на шагах распредлеленной транзакции механизмы Camunda перехватят ошибку и 
+  произведут компенсирующие действия только для пройденных шагов.
+  Camunda позволяет дополнительно настраивать ретраи, что при реализации идемпотентных api значительно повысит надежность системы.
 
-...todo
+- [Сервис Заказа](https://github.com/GUR-ok/arch-order)
+  При старте процесса оформления заказа в сервисе создается "заказ" в статусе PENDING.
+  При успешной оплате статус заказа изменяется на APPROVED.
+  В случае ошибки на любом шаге, предшествующем оплате, заказ будет переведен в статуст CANCELED компенсирующей транзакцией.
+  Создание заказа - по REST API. Изменение статуса заказа - через брокер сообщений.
+
+- [Сервис Склада](https://github.com/GUR-ok/arch-store)
+  Сервис хранит информацию о товарах, их цене, количестве, доступности на складе.
+  Также сервис хранит информацию о заказанных товарах в отдельной таблице. При резервировании товара в заказ, доступное количество уменьшается.
+  При отмене заказа количество на складе пересчитывается соответствующим образом, а записи из таблицы заказанных товаров удаляются.
+  Добавление нового товара, добавление товара в заказ - по REST API. Отмена заказанных товаров - через брокер сообщений.
+  
+- [Сервис Доставки](https://github.com/GUR-ok/arch-delivery)
+  Сервис бронирования доставки. Доставка бронируется по дате и времени суток (MORNING, AFTERNOON, EVENING).
+  Невозможно забронировать два заказа на одну и ту же дату с одним таймслотом.
+  На один заказ может быть забронирована только одна доставка. При отмене доставки запись из БД удаляется.
+  Создание доставки - по REST API. Отмена доставки - через брокер сообщений.
+  
+- [Сервис Биллинга](https://github.com/GUR-ok/arch-billing)
+  Сервис управления балансом на счете. Списание средств происходит только при наличии достаточного количества денег.
+  При недостаточном количестве средтсв сервис бросает исключение, распределенная транзакция отменяется,
+  выполняются компенсирующие операции по отмене заказа, отмене доставки, отмене резервирования товаров на складе.
+  Оплата является поворотной транзакцией. После ее успешного выполнения заказ считается подтвержденным и должен выполниться в любом случае.
+  При успешной оплате статус заказа изменяется на APPROVED.
 
 ---
 
 #### Инструкция по запуску:
-- `minikube start`
+- `minikube start --vm-driver virtualbox --no-vtx-check --memory=24Gb --cpus=4 --disk-size=50Gb`
 - `kubectl create namespace arch-gur`
 - Использовать nginx ingress controller установленный через хелм, а не встроенный в minikube:
 
@@ -33,8 +59,8 @@
 - `helm install gorelov-intercessor ./hw8/intercessor_deployment/`
 - `helm install gorelov-arch-order ./hw8/order_deployment/`
 - `helm install gorelov-arch-store ./hw8/store_deployment/`
-- `helm install gorelov-arch-billing ./hw8/billing_deployment/`
 - `helm install gorelov-arch-delivery ./hw8/delivery_deployment/`
+- `helm install gorelov-arch-billing ./hw8/billing_deployment/`
 
   `kubectl get pods -n arch-gur`
 - В случае ошибки при деплое приложения через helm
@@ -45,10 +71,10 @@
   необходимо выполнить:
     ```
     kubectl get ValidatingWebhookConfiguration
-    kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission
+    kubectl delete -A ValidatingWebhookConfiguration nginx-ingress-nginx-admission
     ```  
 - дождаться поднятия подов
-- на все поды может не хватать ресурсов, следует запускать по очереди, для экономии ресурсов количетсов реплик сокращено
+- на все поды может не хватать ресурсов, следует запускать по очереди, для экономии ресурсов количество реплик сокращено до 1
 
 ---
 
@@ -67,9 +93,12 @@
 
 - Port-forward:
   `kubectl get pods -n arch-gur`
+  
   `kubectl port-forward -n arch-gur arch-intercessor-deployment-76548647fd-bpxbj 8000:8000`
-  `kubectl port-forward -n arch-gur arch-intercessor-postgresql-deployment-0 5432:5432`
-  `kubectl port-forward -n arch-gur arch-order-postgresql-deployment-0 5432:5432`
+   Админская панель будет доступна по адресу: http://localhost:8080/camunda/app/admin/default/#/
+  
+  `kubectl port-forward -n arch-gur arch-intercessor-postgresql-deployment-0 5433:5432`
+  `kubectl port-forward -n arch-gur arch-order-postgresql-deployment-0 5433:5432`
 
 #### Очистка пространства:
 

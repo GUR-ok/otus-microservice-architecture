@@ -27,14 +27,14 @@ spec:
             httpGet:
               port: {{ .Values.deployment.app.port }}
               path: /health
-            initialDelaySeconds: 60
+            initialDelaySeconds: 90
             periodSeconds: 15
             timeoutSeconds: 5
           readinessProbe:
             httpGet:
               port: {{ .Values.deployment.app.port }}
               path: /health
-            initialDelaySeconds: 60
+            initialDelaySeconds: 90
             periodSeconds: 5
           env:
             - name: SERVER_PORT

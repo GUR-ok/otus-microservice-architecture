@@ -8,7 +8,7 @@ deployment:
   app:
     image: gurok/arch_intercessor
     port: 8000
-    replicas: 2
+    replicas: 1
   db:
     image: postgres:latest
     port: 5432
