@@ -1,20 +1,46 @@
-## Домашнее задание №9. Stream Processing
+## Домашнее задание №9. Events
 
 Реализовать событийное взаимодействие в микросервисной архитектуре
 
 ---
-![img.png](img.png)
 
 ### Описание приложения:
 - [Сервис Заказа](https://github.com/GUR-ok/arch-order)
-  //todo
+  Пользователь имеет возможность создать заказ. Сервис делает запрос в сервис Биллинга для оплаты заказа.
   
 - [Сервис Биллинга](https://github.com/GUR-ok/arch-billing)
-  //todo
+  Пользователь имеет возможность пополнить счет. Сервис отправляет запрос в сервис Уведомлений для отправки псием клиенту.
+  Сервис принимает запросы для оплаты созданного заказа.
 
 - [Сервис Уведомлений](https://github.com/GUR-ok/arch-notification)
-  //todo
-  
+  Сервис принимает запросы для отправки писем клиенту
+
+  ###I. Только HTTP взаимодействие.
+  ![img1.png](img1.png)
+  ![img2.png](img2.png)
+
+  ###II. HTTP взаимодействие для оплаты, отправка уведмолений через брокера сообщений.
+  ![img3.png](img3.png)
+  ![img4.png](img4.png)
+
+  ###III. Межсервисное взаимодействие посредством обмена сообщениями через брокера.
+  ![img5.png](img5.png)
+  ![img4.png](img4.png)
+
+---  
+###API
+//todo
+- 1 order               rest  create
+- 2 billing             rest  deposit
+- 3 billing             rest  payment
+- 4 notification        rest  notify
+- 5 notification        event OrderCreatedEvent
+- 6 notification        event PaymentFailEvent
+- 7 billing             event OrderCreatedEvent
+- 8 order, notification event OrderPaidEvent 
+- 9 order, notification event OrderCancelledEvent
+- 10 notification       event DepositAcceptedEvent
+
 ---
 
 ### Инструкция по запуску:
