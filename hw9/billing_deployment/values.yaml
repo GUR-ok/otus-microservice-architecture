@@ -1,0 +1,32 @@
+config:
+  name: arch-billing-configmap
+  port: 8000
+  ddl: validate
+secret:
+  name: arch-billing-secret
+deployment:
+  app:
+    image: gurok/arch_billing_2
+    port: 8000
+    replicas: 1
+  db:
+    image: postgres:latest
+    port: 5432
+    replicas: 1
+service:
+  app:
+    name: arch-billing-service
+    type: ClusterIP
+    protocol: TCP
+    port: 9000
+  db:
+    name: postgresql-billing-service
+    host: "postgresql-billing-service"
+    type: ClusterIP
+    port: 5432
+    sport: "5432"
+    dbname: arch_billing_db
+    dbschema: public
+ingress:
+  name: otus-billing-ingress
+  host: arch.homework

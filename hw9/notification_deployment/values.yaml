@@ -1,0 +1,32 @@
+config:
+  name: arch-notification-configmap
+  port: 8000
+  ddl: validate
+secret:
+  name: arch-notification-secret
+deployment:
+  app:
+    image: gurok/arch_notification
+    port: 8000
+    replicas: 1
+  db:
+    image: postgres:latest
+    port: 5432
+    replicas: 1
+service:
+  app:
+    name: arch-notification-service
+    type: ClusterIP
+    protocol: TCP
+    port: 9000
+  db:
+    name: postgresql-notification-service
+    host: "postgresql-notification-service"
+    type: ClusterIP
+    port: 5432
+    sport: "5432"
+    dbname: arch_notification_db
+    dbschema: public
+ingress:
+  name: otus-notification-ingress
+  host: arch.homework

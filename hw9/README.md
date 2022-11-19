@@ -15,31 +15,46 @@
 - [Сервис Уведомлений](https://github.com/GUR-ok/arch-notification)
   Сервис принимает запросы для отправки писем клиенту
 
-  ###I. Только HTTP взаимодействие.
+  ### I. Только HTTP взаимодействие.
+  
   ![img1.png](img1.png)
   ![img2.png](img2.png)
 
-  ###II. HTTP взаимодействие для оплаты, отправка уведмолений через брокера сообщений.
+  ### II. HTTP взаимодействие для оплаты, отправка уведмолений через брокера сообщений.
+  
   ![img3.png](img3.png)
   ![img4.png](img4.png)
 
-  ###III. Межсервисное взаимодействие посредством обмена сообщениями через брокера.
+  ### III. Межсервисное взаимодействие посредством обмена сообщениями через брокера.
+  
   ![img5.png](img5.png)
-  ![img4.png](img4.png)
-
+  ![img6.png](img6.png)
 ---  
-###API
+### API
+
 //todo
+
 - 1 order               rest  create
 - 2 billing             rest  deposit
 - 3 billing             rest  payment
 - 4 notification        rest  notify
-- 5 notification        event OrderCreatedEvent
-- 6 notification        event PaymentFailEvent
-- 7 billing             event OrderCreatedEvent
-- 8 order, notification event OrderPaidEvent 
-- 9 order, notification event OrderCancelledEvent
-- 10 notification       event DepositAcceptedEvent
+  
+
+Order: 
+SENDS [OrderCreatedEvent] 
+RECEIVES [OrderPaidEvent, PaymentFailEvent]
+
+Billing: 
+SENDS [OrderPaidEvent, PaymentFailEvent, DepositAcceptedEvent] 
+RECEIVES [OrderCreatedEvent, DepositRequestEvent]
+
+Notification: 
+SENDS [], 
+RECEIVES [OrderPaidEvent, PaymentFailEvent, DepositAcceptedEvent]
+
+topics - events:
+billing [OrderCreatedEvent, DepositRequestEvent]
+payment [OrderPaidEvent, PaymentFailEvent, DepositAcceptedEvent]
 
 ---
 
@@ -54,7 +69,10 @@
   kubectl create namespace m && helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx/ && helm repo update && helm install nginx ingress-nginx/ingress-nginx --namespace m -f nginx-ingress.yaml
   ```
 
-//todo
+- `helm install gorelov-kafka ./hw9/kafka/`
+- `helm install gorelov-arch-billing ./hw9/billing_deployment/`
+- `helm install gorelov-arch-notification ./hw9/notification_deployment/`
+- `helm install gorelov-arch-order ./hw9/order_deployment/`
 
   `kubectl get pods -n arch-gur`
 - В случае ошибки при деплое приложения через helm
@@ -91,3 +109,6 @@
 - `helm uninstall nginx -n m`
 - `kubectl delete namespace arch-gur`
 - `kubectl delete namespace m`
+- `helm uninstall gorelov-arch-billing`
+- `helm uninstall gorelov-arch-notification`
+- `helm uninstall gorelov-arch-order`
