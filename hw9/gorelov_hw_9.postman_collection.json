@@ -212,11 +212,309 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Health Billing Health",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"var health = (jsonData.status);\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Status UP\", function () {\r",
+									"    pm.expect(health).to.equal('OK')\r",
+									"    });\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/billing/health",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"billing",
+								"health"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "asfa",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
 		{
-			"name": "New Order",
+			"name": "Create ProfileAccount",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var id = JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"profile1\", id);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"console.log(\"Создан счет \" + id);\r",
+							"setTimeout(function(){\r",
+							"          console.log(\"Sleeping for 3 seconds before next request.\");\r",
+							"}, 3000);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/billing/account/create",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"billing",
+						"account",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get ProfileAccount (balance zero)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"var balance = (jsonData.balance);\r",
+							"\r",
+							"pm.test(\"При запросе созданного профиля баланс равен 0\", function () {\r",
+							"    pm.expect(balance).to.equal(0)\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/billing/account/{{profile1}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"billing",
+						"account",
+						"{{profile1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Deposit",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Депозит внесен. текущий баланс равен 199\", function () {\r",
+							"    pm.expect(jsonData).to.equal(199.0)\r",
+							"});\r",
+							"\r",
+							"console.log(\"Внесен депозит \" + jsonData);\r",
+							"setTimeout(function(){\r",
+							"          console.log(\"Sleeping for 3 seconds before next request.\");\r",
+							"}, 3000);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/billing/account/{{profile1}}?amount=199",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"billing",
+						"account",
+						"{{profile1}}"
+					],
+					"query": [
+						{
+							"key": "amount",
+							"value": "199"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get ProfileAccount (deposit accepted)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"var balance = (jsonData.balance);\r",
+							"\r",
+							"pm.test(\"При запросе созданного профиля баланс равен 199\", function () {\r",
+							"    pm.expect(balance).to.equal(199)\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/billing/account/{{profile1}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"billing",
+						"account",
+						"{{profile1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Order (not enough money)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var id = JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"order1\", id);\r",
+							"\r",
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"console.log(\"Создан заказ на большую сумму\" + id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -243,6 +541,349 @@
 							"key": "profileId",
 							"value": "{{profile1}}"
 						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Order (pending)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"var state = (jsonData.state);\r",
+							"\r",
+							"pm.test(\"При запросе статуса заказа - PENDING\", function () {\r",
+							"    pm.expect(state).to.equal(\"PENDING\")\r",
+							"});\r",
+							"\r",
+							"setTimeout(function(){\r",
+							"          console.log(\"Sleeping for 3 seconds before next request.\");\r",
+							"}, 5000);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{baseUrl}}/orders/{{order1}}?profileId={{profile1}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"orders",
+						"{{order1}}"
+					],
+					"query": [
+						{
+							"key": "profileId",
+							"value": "{{profile1}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Order (cancelled)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"var state = (jsonData.state);\r",
+							"\r",
+							"pm.test(\"При запросе статуса заказа - CANCELED\", function () {\r",
+							"    pm.expect(state).to.equal(\"CANCELED\")\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{baseUrl}}/orders/{{order1}}?profileId={{profile1}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"orders",
+						"{{order1}}"
+					],
+					"query": [
+						{
+							"key": "profileId",
+							"value": "{{profile1}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get ProfileAccount (deposit did not changed)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"var balance = (jsonData.balance);\r",
+							"\r",
+							"pm.test(\"При запросе созданного профиля баланс равен 199\", function () {\r",
+							"    pm.expect(balance).to.equal(199)\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/billing/account/{{profile1}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"billing",
+						"account",
+						"{{profile1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Order Good",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var id = JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"order2\", id);\r",
+							"\r",
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"console.log(\"Создан заказ на достаточную сумму\" + id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"productQuantity\": 3\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/orders?profileId={{profile1}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"orders"
+					],
+					"query": [
+						{
+							"key": "profileId",
+							"value": "{{profile1}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Order (pending)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"var state = (jsonData.state);\r",
+							"\r",
+							"pm.test(\"При запросе статуса заказа - PENDING\", function () {\r",
+							"    pm.expect(state).to.equal(\"PENDING\")\r",
+							"});\r",
+							"\r",
+							"setTimeout(function(){\r",
+							"          console.log(\"Sleeping for 3 seconds before next request.\");\r",
+							"}, 5000);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{baseUrl}}/orders/{{order2}}?profileId={{profile1}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"orders",
+						"{{order2}}"
+					],
+					"query": [
+						{
+							"key": "profileId",
+							"value": "{{profile1}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Order (approved)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"var state = (jsonData.state);\r",
+							"\r",
+							"pm.test(\"При запросе статуса заказа - APPROVED\", function () {\r",
+							"    pm.expect(state).to.equal(\"APPROVED\")\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{baseUrl}}/orders/{{order2}}?profileId={{profile1}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"orders",
+						"{{order2}}"
+					],
+					"query": [
+						{
+							"key": "profileId",
+							"value": "{{profile1}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get ProfileAccount (balance reduced)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"var balance = (jsonData.balance);\r",
+							"\r",
+							"pm.test(\"При запросе созданного профиля баланс равен 4\", function () {\r",
+							"    pm.expect(balance).to.equal(4)\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/billing/account/{{profile1}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"billing",
+						"account",
+						"{{profile1}}"
 					]
 				}
 			},
@@ -277,13 +918,21 @@
 		},
 		{
 			"key": "profile1",
-			"value": "890c8943-e434-466e-809f-3b6763b8b1ef",
+			"value": "",
 			"type": "string"
 		},
 		{
 			"key": "profile2",
-			"value": "5d9556c2-3bee-4da5-8627-91c84d5382f7",
+			"value": "",
 			"type": "string"
+		},
+		{
+			"key": "order1",
+			"value": ""
+		},
+		{
+			"key": "order2",
+			"value": ""
 		}
 	]
 }

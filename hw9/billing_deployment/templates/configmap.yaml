@@ -5,5 +5,4 @@ metadata:
   namespace: arch-gur
 data:
   SERVER_PORT: "{{ .Values.config.port }}"
-  SPRING_JPA_HIBERNATE_DDL_AUTO: "{{ .Values.config.ddl }}"
   SPRING_PROFILES_ACTIVE: "hw09"
