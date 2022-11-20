@@ -101,8 +101,10 @@ payment [OrderPaidEvent, PaymentFailEvent, DepositAcceptedEvent]
 
 ### Проверка и отладка:
 
-//todo
-   
+kubectl port-forward -n arch-gur kafka-manager-7b8fb9f6c6-dxc4g 9000:9000
+на localhost:9000 будет доступна панель кафка менеджера
+![img.png](img.png)
+
 ### Очистка пространства:
 
 //todo
@@ -112,3 +114,4 @@ payment [OrderPaidEvent, PaymentFailEvent, DepositAcceptedEvent]
 - `helm uninstall gorelov-arch-billing`
 - `helm uninstall gorelov-arch-notification`
 - `helm uninstall gorelov-arch-order`
+- `helm uninstall gorelov-kafka`

@@ -11,28 +11,28 @@ spec:
     - host: {{ .Values.ingress.host }}
       http:
         paths:
-          - path: /otusapp/gur-ok/orders/?(.*)($|/)
+          - path: /otusapp/gur-ok/notification/?(.*)($|/)
             pathType: Prefix
             backend:
               service:
                 name: {{ .Values.service.app.name }}
                 port:
                   number: {{ .Values.service.app.port }}
-          - path: /orders/(.*)
+          - path: /notification/(.*)
             pathType: Prefix
             backend:
               service:
                 name: {{ .Values.service.app.name }}
                 port:
                   number: {{ .Values.service.app.port }}
-          - path: /otusapp/gur-ok/orders/actuator/(.*)
+          - path: /otusapp/gur-ok/notification/actuator/(.*)
             pathType: Prefix
             backend:
               service:
                 name: {{ .Values.service.app.name }}
                 port:
                   number: 9099
-          - path: /orders/actuator/(.*)
+          - path: /notification/actuator/(.*)
             pathType: Prefix
             backend:
               service:
