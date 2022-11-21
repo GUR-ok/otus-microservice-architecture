@@ -1,26 +1,28 @@
-## Домашнее задание №9. Events
+## Домашнее задание №9. StreamProcessing. Events
 
 Реализовать событийное взаимодействие в микросервисной архитектуре
 
 ---
 
 ### Описание приложения:
-- [Сервис Заказа](https://github.com/GUR-ok/arch-order)
+- [Сервис Заказа]
   Пользователь имеет возможность создать заказ. Сервис делает запрос в сервис Биллинга для оплаты заказа.
   
-- [Сервис Биллинга](https://github.com/GUR-ok/arch-billing)
-  Пользователь имеет возможность пополнить счет. Сервис отправляет запрос в сервис Уведомлений для отправки псием клиенту.
+- [Сервис Биллинга]
+  Пользователь имеет возможность пополнить счет. Сервис отправляет запрос в сервис Уведомлений для отправки пиcем клиенту.
   Сервис принимает запросы для оплаты созданного заказа.
 
-- [Сервис Уведомлений](https://github.com/GUR-ok/arch-notification)
+- [Сервис Уведомлений]
   Сервис принимает запросы для отправки писем клиенту
+
+## Варианты реализации
 
   ### I. Только HTTP взаимодействие.
   
   ![img1.png](img1.png)
   ![img2.png](img2.png)
 
-  ### II. HTTP взаимодействие для оплаты, отправка уведмолений через брокера сообщений.
+  ### II. HTTP взаимодействие для оплаты, отправка уведмолений через брокер сообщений.
   
   ![img3.png](img3.png)
   ![img4.png](img4.png)
@@ -30,31 +32,48 @@
   ![img5.png](img5.png)
   ![img6.png](img6.png)
 ---  
+
+### Для реализации на практике был выбран вариант III, используя соыбтийной взаимодействие через Kafka.
+
+- [Сервис Заказа](https://github.com/GUR-ok/arch-order)
+  * Пользователь создает заказ посредством HTTP запроса. Сервис отправляет событие в очередь, что заказ создан.
+  Заказу присваивается статус PENDING.
+  * После проведение платежа в сервисе Биллинга сервис принимает событие об успешной/неуспешной оплате заказа.
+  Заказ получает статус APPROVED/CANCELED.
+  * Сервис подключен к реляционной БД для хранения данных заказа
+  
+- [Сервис Биллинга](https://github.com/GUR-ok/arch-billing)
+  * Сервис **не использует** реляционные БД. Для хранения информации используются KafkaStreams,
+  для извлечения информации о состоянии счета - KTable и GlobalKTable.
+  * Пополнение счета происходит через очередь сообщений. Чтобы в Postman иметь возможность отправлять сообщения в очередь
+  и не запускать отдельный kafka-connector,
+  создан коннектор-эндпоинт, принимающий http-запрос. Эндпоинт отправляет сообщение в очередь о внесении депозита.
+  * После списания средств сервис отправляет сообщение в очередь об успешной/неуспешной оплате заказа.
+
+- [Сервис Уведомлений](https://github.com/GUR-ok/arch-notification)
+  * Сервис принимает сообщения об успешной/неуспешной оплате, а также о внесении депозита на счет.
+  * Сервис отправляет письма клиенту (в демонстрационных целях сообщения кладутся в БД).
+  
 ### API
 
-//todo
-
-- 1 order               rest  create
-- 2 billing             rest  deposit
-- 3 billing             rest  payment
-- 4 notification        rest  notify
+Order Service:
+AsyncAPI спецификация: [order-async-api.yaml](https://github.com/GUR-ok/otus-microservice-architecture/tree/master/hw9/order-async-api.yaml)
+- PUBLISH [OrderCreatedEvent]
+- SUBSCRIBE [OrderPaidEvent, PaymentFailEvent]
   
+Billing Service:
+AsyncAPI спецификация: [billing-async-api.yaml](https://github.com/GUR-ok/otus-microservice-architecture/tree/master/hw9/billing-async-api.yaml)
+- PUBLISH [OrderPaidEvent, PaymentFailEvent, DepositAcceptedEvent]
+- SUBSCRIBE [OrderCreatedEvent, DepositRequestEvent]
 
-Order: 
-SENDS [OrderCreatedEvent] 
-RECEIVES [OrderPaidEvent, PaymentFailEvent]
-
-Billing: 
-SENDS [OrderPaidEvent, PaymentFailEvent, DepositAcceptedEvent] 
-RECEIVES [OrderCreatedEvent, DepositRequestEvent]
-
-Notification: 
-SENDS [], 
-RECEIVES [OrderPaidEvent, PaymentFailEvent, DepositAcceptedEvent]
+Notification Service:
+AsyncAPI спецификация: [notification-async-api.yaml](https://github.com/GUR-ok/otus-microservice-architecture/tree/master/hw9/notification-async-api.yaml)
+- PUBLISH [],
+- SUBSCRIBE [OrderPaidEvent, PaymentFailEvent, DepositAcceptedEvent]
 
 topics - events:
-billing [OrderCreatedEvent, DepositRequestEvent]
-payment [OrderPaidEvent, PaymentFailEvent, DepositAcceptedEvent]
+- billing [OrderCreatedEvent, DepositRequestEvent]
+- payment [OrderPaidEvent, PaymentFailEvent, DepositAcceptedEvent]
 
 ---
 
@@ -95,23 +114,24 @@ payment [OrderPaidEvent, PaymentFailEvent, DepositAcceptedEvent]
 
 #### Результаты тестов:
 
-//todo
+Скриншоты с тестами в [папке](./screenshots).
+![img_tests.png](img_tests.png)
 
 ---
 
 ### Проверка и отладка:
 
-kubectl port-forward -n arch-gur kafka-manager-7b8fb9f6c6-dxc4g 9000:9000
+![img_1.png](img_1.png)
+`kubectl port-forward -n arch-gur kafka-manager-7b8fb9f6c6-dxc4g 9000:9000`
 на localhost:9000 будет доступна панель кафка менеджера
 ![img.png](img.png)
 
 ### Очистка пространства:
 
-//todo
 - `helm uninstall nginx -n m`
-- `kubectl delete namespace arch-gur`
-- `kubectl delete namespace m`
 - `helm uninstall gorelov-arch-billing`
 - `helm uninstall gorelov-arch-notification`
 - `helm uninstall gorelov-arch-order`
 - `helm uninstall gorelov-kafka`
+- `kubectl delete namespace arch-gur`
+- `kubectl delete namespace m`

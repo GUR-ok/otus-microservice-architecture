@@ -279,6 +279,64 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Clear notifications",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/notification/",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"notification",
+								""
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "asfa",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -298,8 +356,8 @@
 							"\r",
 							"console.log(\"Создан счет \" + id);\r",
 							"setTimeout(function(){\r",
-							"          console.log(\"Sleeping for 3 seconds before next request.\");\r",
-							"}, 3000);"
+							"          console.log(\"Sleeping for 20 seconds before next request.\");\r",
+							"}, 20000);"
 						],
 						"type": "text/javascript"
 					}
@@ -345,10 +403,21 @@
 							"\r",
 							"var jsonData = pm.response.json();\r",
 							"var balance = (jsonData.balance);\r",
+							"var id = (jsonData.id);\r",
 							"\r",
 							"pm.test(\"При запросе созданного профиля баланс равен 0\", function () {\r",
-							"    pm.expect(balance).to.equal(0)\r",
+							"    pm.expect(balance).to.equal(0);\r",
+							"    pm.expect(id).to.equal(pm.collectionVariables.get(\"profile1\"));\r",
 							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -403,8 +472,8 @@
 							"\r",
 							"console.log(\"Внесен депозит \" + jsonData);\r",
 							"setTimeout(function(){\r",
-							"          console.log(\"Sleeping for 3 seconds before next request.\");\r",
-							"}, 3000);"
+							"          console.log(\"Sleeping for 15 seconds before next request.\");\r",
+							"}, 15000);"
 						],
 						"type": "text/javascript"
 					}
@@ -444,6 +513,75 @@
 			"response": []
 		},
 		{
+			"name": "Get Deposit Notification",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var data = pm.response.json();\r",
+							"var notifs = data.find(u => u.account === pm.collectionVariables.get(\"profile1\"))\r",
+							"\r",
+							"const notifDeposit = data.find(u => u.account === pm.collectionVariables.get(\"profile1\") && u.event === \"DEPOSIT_ACCEPTED\")\r",
+							"const notifPaid = data.find(u => u.account === pm.collectionVariables.get(\"profile1\") && u.event === \"ORDER_PAID\")\r",
+							"const notifFail = data.find(u => u.account === pm.collectionVariables.get(\"profile1\") && u.event === \"PAYMENT_FAIL\")\r",
+							"\r",
+							"const notifDepositId = notifDeposit ? notifDeposit.id : 'not found'\r",
+							"const notifFailId = notifFail ? notifFail.id : 'not found'\r",
+							"const notifPaidId = notifPaid ? notifPaid.id : 'not found'\r",
+							"console.log(notifDepositId)\r",
+							"console.log(notifFailId)\r",
+							"console.log(notifPaidId)\r",
+							"\r",
+							"pm.test(\"Уведомления о внесении депозита отправлено\", function () {\r",
+							"    pm.expect(notifDepositId).not.equal('not found');\r",
+							"    pm.expect(notifFailId).is.equal('not found');\r",
+							"    pm.expect(notifPaidId).is.equal('not found');\r",
+							"});\r",
+							"\r",
+							"setTimeout(function(){\r",
+							"          console.log(\"Sleeping for 15 seconds before next request.\");\r",
+							"}, 15000);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/notification/",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"notification",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Get ProfileAccount (deposit accepted)",
 			"event": [
 				{
@@ -460,6 +598,17 @@
 							"pm.test(\"При запросе созданного профиля баланс равен 199\", function () {\r",
 							"    pm.expect(balance).to.equal(199)\r",
 							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"setTimeout(function(){\r",
+							"          console.log(\"Sleeping for 3 seconds before next request.\");\r",
+							"}, 10000);"
 						],
 						"type": "text/javascript"
 					}
@@ -509,7 +658,10 @@
 							"    pm.response.to.have.status(201);\r",
 							"});\r",
 							"\r",
-							"console.log(\"Создан заказ на большую сумму\" + id);"
+							"console.log(\"Создан заказ на большую сумму \" + id);\r",
+							"setTimeout(function(){\r",
+							"          console.log(\"Sleeping for 15 seconds before next request.\");\r",
+							"}, 15000);"
 						],
 						"type": "text/javascript"
 					}
@@ -535,55 +687,6 @@
 					],
 					"path": [
 						"orders"
-					],
-					"query": [
-						{
-							"key": "profileId",
-							"value": "{{profile1}}"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get Order (pending)",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"var jsonData = pm.response.json();\r",
-							"var state = (jsonData.state);\r",
-							"\r",
-							"pm.test(\"При запросе статуса заказа - PENDING\", function () {\r",
-							"    pm.expect(state).to.equal(\"PENDING\")\r",
-							"});\r",
-							"\r",
-							"setTimeout(function(){\r",
-							"          console.log(\"Sleeping for 3 seconds before next request.\");\r",
-							"}, 5000);"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://{{baseUrl}}/orders/{{order1}}?profileId={{profile1}}",
-					"protocol": "http",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"orders",
-						"{{order1}}"
 					],
 					"query": [
 						{
@@ -706,7 +809,10 @@
 							"    pm.response.to.have.status(201);\r",
 							"});\r",
 							"\r",
-							"console.log(\"Создан заказ на достаточную сумму\" + id);"
+							"console.log(\"Создан заказ на достаточную сумму \" + id);\r",
+							"setTimeout(function(){\r",
+							"          console.log(\"Sleeping for 15 seconds before next request.\");\r",
+							"}, 15000);"
 						],
 						"type": "text/javascript"
 					}
@@ -744,55 +850,6 @@
 			"response": []
 		},
 		{
-			"name": "Get Order (pending)",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"var jsonData = pm.response.json();\r",
-							"var state = (jsonData.state);\r",
-							"\r",
-							"pm.test(\"При запросе статуса заказа - PENDING\", function () {\r",
-							"    pm.expect(state).to.equal(\"PENDING\")\r",
-							"});\r",
-							"\r",
-							"setTimeout(function(){\r",
-							"          console.log(\"Sleeping for 3 seconds before next request.\");\r",
-							"}, 5000);"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://{{baseUrl}}/orders/{{order2}}?profileId={{profile1}}",
-					"protocol": "http",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"path": [
-						"orders",
-						"{{order2}}"
-					],
-					"query": [
-						{
-							"key": "profileId",
-							"value": "{{profile1}}"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "Get Order (approved)",
 			"event": [
 				{
@@ -808,7 +865,11 @@
 							"\r",
 							"pm.test(\"При запросе статуса заказа - APPROVED\", function () {\r",
 							"    pm.expect(state).to.equal(\"APPROVED\")\r",
-							"});"
+							"});\r",
+							"\r",
+							"setTimeout(function(){\r",
+							"          console.log(\"Sleeping for 15 seconds before next request.\");\r",
+							"}, 15000);"
 						],
 						"type": "text/javascript"
 					}
@@ -888,6 +949,73 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Get All Notifications",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var data = pm.response.json();\r",
+							"\r",
+							"const notifDeposit = data.find(u => u.account === pm.collectionVariables.get(\"profile1\") && u.event === \"DEPOSIT_ACCEPTED\");\r",
+							"const notifPaid = data.find(u => u.account === pm.collectionVariables.get(\"profile1\") && u.event === \"ORDER_PAID\");\r",
+							"const notifFail = data.find(u => u.account === pm.collectionVariables.get(\"profile1\") && u.event === \"PAYMENT_FAIL\");\r",
+							"\r",
+							"const notifDepositId = notifDeposit ? notifDeposit : 'not found'\r",
+							"const notifFailId = notifFail ? notifFail : 'not found'\r",
+							"const notifPaidId = notifPaid ? notifPaid : 'not found'\r",
+							"console.log(notifDepositId)\r",
+							"console.log(notifFailId)\r",
+							"console.log(notifPaidId)\r",
+							"\r",
+							"pm.test(\"Уведомления были отправлены\", function () {\r",
+							"    pm.expect(notifDepositId).not.equal('not found');\r",
+							"    pm.expect(notifFailId).not.equal('not found');\r",
+							"    pm.expect(notifPaidId).not.equal('not found');\r",
+							"});\r",
+							"pm.test(\"Уведомления были отправлены в правильном порядке\", function () {\r",
+							"    pm.expect(Date.parse(notifDeposit.created)).to.be.below(Date.parse(notifFail.created));\r",
+							"    pm.expect(Date.parse(notifFail.created)).to.be.below(Date.parse(notifPaidId.created));\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/notification/",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"notification",
+						""
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [
@@ -918,11 +1046,6 @@
 		},
 		{
 			"key": "profile1",
-			"value": "",
-			"type": "string"
-		},
-		{
-			"key": "profile2",
 			"value": "",
 			"type": "string"
 		},

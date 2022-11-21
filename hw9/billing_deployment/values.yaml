@@ -8,11 +8,7 @@ deployment:
   app:
     image: gurok/arch_billing_2
     port: 8000
-    replicas: 1
-  db:
-    image: postgres:latest
-    port: 5432
-    replicas: 1
+    replicas: 3
 service:
   app:
     name: arch-billing-service

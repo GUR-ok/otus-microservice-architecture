@@ -9,6 +9,6 @@
 - [hw6](https://github.com/GUR-ok/otus-microservice-architecture/tree/master/hw6) - Домашнее задание №6. Idempotency
 - [hw7](https://github.com/GUR-ok/otus-microservice-architecture/tree/master/hw7) - Домашнее задание №7. Decomposition
 - [hw8](https://github.com/GUR-ok/otus-microservice-architecture/tree/master/hw8) - Домашнее задание №8. Distributed transactions
-- [hw9](https://github.com/GUR-ok/otus-microservice-architecture/tree/master/hw9) - Домашнее задание №9. Events
+- [hw9](https://github.com/GUR-ok/otus-microservice-architecture/tree/master/hw9) - Домашнее задание №9. StreamProcessing. Events
 ---
 - [project](https://github.com/GUR-ok/otus-microservice-architecture/tree/master/project) - Курсовая работа (в разработке) 

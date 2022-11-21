@@ -1,0 +1,109 @@
+asyncapi: '2.4.0'
+info:
+  title: Order service
+  version: '1.0.0'
+  description: |
+    Order service
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+
+servers:
+  test:
+    url: kafka:9094
+    protocol: kafka
+    description: Test broker
+
+defaultContentType: application/json
+
+channels:
+  payment/PaymentFailEvent:
+    subscribe:
+      operationId: PaymentFailEvent
+      message:
+        $ref: '#/components/messages/PaymentFailEventData'
+  payment/OrderPaidEvent:
+    subscribe:
+      operationId: OrderPaidEvent
+      message:
+        $ref: '#/components/messages/OrderPaidEventData'
+  billing:
+    publish:
+      operationId: OrderCreatedEvent
+      message:
+        $ref: '#/components/messages/OrderCreatedEventData'
+
+components:
+  messages:
+    PaymentFailEventData:
+      name: paymentFail
+      title: Order payment failed
+      summary: Payment result
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/PaymentFailEventData'
+    OrderPaidEventData:
+      name: orderPaid
+      title: Order successfully paid
+      summary: Payment result
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/OrderPaidEventData'
+    OrderCreatedEventData:
+      name: orderPaid
+      title: Order successfully paid
+      summary: Payment result
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/OrderCreatedEventData'
+
+  schemas:
+    PaymentFailEventData:
+      type: object
+      properties:
+        orderId:
+          type: string
+          format: uuid
+        accountId:
+          type: string
+          format: uuid
+        event:
+          type: string
+          enum:
+            - PAYMENT_FAIL
+            - ORDER_PAID
+          example: PAYMENT_FAIL
+
+    OrderPaidEventData:
+      type: object
+      properties:
+        orderId:
+          type: string
+          format: uuid
+        accountId:
+          type: string
+          format: uuid
+        event:
+          type: string
+          enum:
+            - PAYMENT_FAIL
+            - ORDER_PAID
+          example: ORDER_PAID
+
+    OrderCreatedEventData:
+      type: object
+      properties:
+        orderId:
+          type: string
+          format: uuid
+        accountId:
+          type: string
+          format: uuid
+        price:
+          type: number
+          example: 199.9
+        event:
+          type: string
+          enum:
+            - ORDER_CREATED
+          example: ORDER_CREATED

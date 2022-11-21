@@ -8,7 +8,7 @@ deployment:
   app:
     image: gurok/arch_notification
     port: 8000
-    replicas: 1
+    replicas: 2
   db:
     image: postgres:latest
     port: 5432
