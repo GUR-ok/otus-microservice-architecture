@@ -1,0 +1,1061 @@
+{
+	"info": {
+		"_postman_id": "61e265e5-aa9b-48e9-8be7-d9e9319ef447",
+		"name": "gorelov_hw_9",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20534987"
+	},
+	"item": [
+		{
+			"name": "Health",
+			"item": [
+				{
+					"name": "Health Order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"var health = (jsonData.status);\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Status UP\", function () {\r",
+									"    pm.expect(health).to.equal('UP')\r",
+									"    });\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/orders/actuator/health",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders",
+								"actuator",
+								"health"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "asfa",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Health Notification",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"var health = (jsonData.status);\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Status UP\", function () {\r",
+									"    pm.expect(health).to.equal('UP')\r",
+									"    });\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/notification/actuator/health",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"notification",
+								"actuator",
+								"health"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "asfa",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Health Billing",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"var health = (jsonData.status);\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Status UP\", function () {\r",
+									"    pm.expect(health).to.equal('UP')\r",
+									"    });\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/billing/actuator/health",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"billing",
+								"actuator",
+								"health"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "asfa",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Health Billing Health",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"var health = (jsonData.status);\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Status UP\", function () {\r",
+									"    pm.expect(health).to.equal('OK')\r",
+									"    });\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/billing/health",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"billing",
+								"health"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "asfa",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Clear notifications",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}/notification/",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"notification",
+								""
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "asfa",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Create ProfileAccount",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var id = JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"profile1\", id);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"console.log(\"Создан счет \" + id);\r",
+							"setTimeout(function(){\r",
+							"          console.log(\"Sleeping for 20 seconds before next request.\");\r",
+							"}, 20000);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/billing/account/create",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"billing",
+						"account",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get ProfileAccount (balance zero)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"var balance = (jsonData.balance);\r",
+							"var id = (jsonData.id);\r",
+							"\r",
+							"pm.test(\"При запросе созданного профиля баланс равен 0\", function () {\r",
+							"    pm.expect(balance).to.equal(0);\r",
+							"    pm.expect(id).to.equal(pm.collectionVariables.get(\"profile1\"));\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/billing/account/{{profile1}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"billing",
+						"account",
+						"{{profile1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Deposit",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Депозит внесен. текущий баланс равен 199\", function () {\r",
+							"    pm.expect(jsonData).to.equal(199.0)\r",
+							"});\r",
+							"\r",
+							"console.log(\"Внесен депозит \" + jsonData);\r",
+							"setTimeout(function(){\r",
+							"          console.log(\"Sleeping for 15 seconds before next request.\");\r",
+							"}, 15000);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/billing/account/{{profile1}}?amount=199",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"billing",
+						"account",
+						"{{profile1}}"
+					],
+					"query": [
+						{
+							"key": "amount",
+							"value": "199"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Deposit Notification",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var data = pm.response.json();\r",
+							"var notifs = data.find(u => u.account === pm.collectionVariables.get(\"profile1\"))\r",
+							"\r",
+							"const notifDeposit = data.find(u => u.account === pm.collectionVariables.get(\"profile1\") && u.event === \"DEPOSIT_ACCEPTED\")\r",
+							"const notifPaid = data.find(u => u.account === pm.collectionVariables.get(\"profile1\") && u.event === \"ORDER_PAID\")\r",
+							"const notifFail = data.find(u => u.account === pm.collectionVariables.get(\"profile1\") && u.event === \"PAYMENT_FAIL\")\r",
+							"\r",
+							"const notifDepositId = notifDeposit ? notifDeposit.id : 'not found'\r",
+							"const notifFailId = notifFail ? notifFail.id : 'not found'\r",
+							"const notifPaidId = notifPaid ? notifPaid.id : 'not found'\r",
+							"console.log(notifDepositId)\r",
+							"console.log(notifFailId)\r",
+							"console.log(notifPaidId)\r",
+							"\r",
+							"pm.test(\"Уведомления о внесении депозита отправлено\", function () {\r",
+							"    pm.expect(notifDepositId).not.equal('not found');\r",
+							"    pm.expect(notifFailId).is.equal('not found');\r",
+							"    pm.expect(notifPaidId).is.equal('not found');\r",
+							"});\r",
+							"\r",
+							"setTimeout(function(){\r",
+							"          console.log(\"Sleeping for 15 seconds before next request.\");\r",
+							"}, 15000);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/notification/",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"notification",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get ProfileAccount (deposit accepted)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"var balance = (jsonData.balance);\r",
+							"\r",
+							"pm.test(\"При запросе созданного профиля баланс равен 199\", function () {\r",
+							"    pm.expect(balance).to.equal(199)\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"setTimeout(function(){\r",
+							"          console.log(\"Sleeping for 3 seconds before next request.\");\r",
+							"}, 10000);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/billing/account/{{profile1}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"billing",
+						"account",
+						"{{profile1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Order (not enough money)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var id = JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"order1\", id);\r",
+							"\r",
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"console.log(\"Создан заказ на большую сумму \" + id);\r",
+							"setTimeout(function(){\r",
+							"          console.log(\"Sleeping for 15 seconds before next request.\");\r",
+							"}, 15000);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"productQuantity\": 10\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/orders?profileId={{profile1}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"orders"
+					],
+					"query": [
+						{
+							"key": "profileId",
+							"value": "{{profile1}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Order (cancelled)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"var state = (jsonData.state);\r",
+							"\r",
+							"pm.test(\"При запросе статуса заказа - CANCELED\", function () {\r",
+							"    pm.expect(state).to.equal(\"CANCELED\")\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{baseUrl}}/orders/{{order1}}?profileId={{profile1}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"orders",
+						"{{order1}}"
+					],
+					"query": [
+						{
+							"key": "profileId",
+							"value": "{{profile1}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get ProfileAccount (deposit did not changed)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"var balance = (jsonData.balance);\r",
+							"\r",
+							"pm.test(\"При запросе созданного профиля баланс равен 199\", function () {\r",
+							"    pm.expect(balance).to.equal(199)\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/billing/account/{{profile1}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"billing",
+						"account",
+						"{{profile1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Order Good",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var id = JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"order2\", id);\r",
+							"\r",
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"console.log(\"Создан заказ на достаточную сумму \" + id);\r",
+							"setTimeout(function(){\r",
+							"          console.log(\"Sleeping for 15 seconds before next request.\");\r",
+							"}, 15000);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"productQuantity\": 3\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/orders?profileId={{profile1}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"orders"
+					],
+					"query": [
+						{
+							"key": "profileId",
+							"value": "{{profile1}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Order (approved)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"var state = (jsonData.state);\r",
+							"\r",
+							"pm.test(\"При запросе статуса заказа - APPROVED\", function () {\r",
+							"    pm.expect(state).to.equal(\"APPROVED\")\r",
+							"});\r",
+							"\r",
+							"setTimeout(function(){\r",
+							"          console.log(\"Sleeping for 15 seconds before next request.\");\r",
+							"}, 15000);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{baseUrl}}/orders/{{order2}}?profileId={{profile1}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"orders",
+						"{{order2}}"
+					],
+					"query": [
+						{
+							"key": "profileId",
+							"value": "{{profile1}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get ProfileAccount (balance reduced)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"var balance = (jsonData.balance);\r",
+							"\r",
+							"pm.test(\"При запросе созданного профиля баланс равен 4\", function () {\r",
+							"    pm.expect(balance).to.equal(4)\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/billing/account/{{profile1}}",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"billing",
+						"account",
+						"{{profile1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Notifications",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var data = pm.response.json();\r",
+							"\r",
+							"const notifDeposit = data.find(u => u.account === pm.collectionVariables.get(\"profile1\") && u.event === \"DEPOSIT_ACCEPTED\");\r",
+							"const notifPaid = data.find(u => u.account === pm.collectionVariables.get(\"profile1\") && u.event === \"ORDER_PAID\");\r",
+							"const notifFail = data.find(u => u.account === pm.collectionVariables.get(\"profile1\") && u.event === \"PAYMENT_FAIL\");\r",
+							"\r",
+							"const notifDepositId = notifDeposit ? notifDeposit : 'not found'\r",
+							"const notifFailId = notifFail ? notifFail : 'not found'\r",
+							"const notifPaidId = notifPaid ? notifPaid : 'not found'\r",
+							"console.log(notifDepositId)\r",
+							"console.log(notifFailId)\r",
+							"console.log(notifPaidId)\r",
+							"\r",
+							"pm.test(\"Уведомления были отправлены\", function () {\r",
+							"    pm.expect(notifDepositId).not.equal('not found');\r",
+							"    pm.expect(notifFailId).not.equal('not found');\r",
+							"    pm.expect(notifPaidId).not.equal('not found');\r",
+							"});\r",
+							"pm.test(\"Уведомления были отправлены в правильном порядке\", function () {\r",
+							"    pm.expect(Date.parse(notifDeposit.created)).to.be.below(Date.parse(notifFail.created));\r",
+							"    pm.expect(Date.parse(notifFail.created)).to.be.below(Date.parse(notifPaidId.created));\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{baseUrl}}/notification/",
+					"protocol": "http",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"notification",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "arch.homework/otusapp/gur-ok",
+			"type": "string"
+		},
+		{
+			"key": "profile1",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "order1",
+			"value": ""
+		},
+		{
+			"key": "order2",
+			"value": ""
+		}
+	]
+}

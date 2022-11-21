@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "chart.name" . }}-deployment
+  namespace: arch-gur
+  labels:
+    app: {{ include "chart.name" . }}-app
+spec:
+  replicas: {{ .Values.deployment.app.replicas }}
+  selector:
+    matchLabels:
+      app: {{ include "chart.name" . }}-app
+  template:
+    metadata:
+      labels:
+        app: {{ include "chart.name" . }}-app
+    spec:
+      containers:
+        - name: {{ include "chart.name" . }}-app
+          image: {{ .Values.deployment.app.image }}
+          ports:
+            - name: web
+              containerPort: {{ .Values.deployment.app.port }}
+            - name: actuator
+              containerPort: 9090
+          livenessProbe:
+            httpGet:
+              port: {{ .Values.deployment.app.port }}
+              path: /health
+            initialDelaySeconds: 90
+            periodSeconds: 15
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              port: {{ .Values.deployment.app.port }}
+              path: /health
+            initialDelaySeconds: 90
+            periodSeconds: 5
+          env:
+            - name: SERVER_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.config.name }}
+                  key: SERVER_PORT
+            - name: SPRING_PROFILES_ACTIVE
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.config.name }}
+                  key: SPRING_PROFILES_ACTIVE
