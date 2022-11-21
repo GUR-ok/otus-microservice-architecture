@@ -115,6 +115,7 @@ topics - events:
 #### Результаты тестов:
 
 Скриншоты с тестами в [папке](./screenshots).
+
 ![img_tests.png](img_tests.png)
 
 ---
@@ -122,8 +123,11 @@ topics - events:
 ### Проверка и отладка:
 
 ![img_1.png](img_1.png)
+
 `kubectl port-forward -n arch-gur kafka-manager-7b8fb9f6c6-dxc4g 9000:9000`
+
 на localhost:9000 будет доступна панель кафка менеджера
+
 ![img.png](img.png)
 
 ### Очистка пространства:
