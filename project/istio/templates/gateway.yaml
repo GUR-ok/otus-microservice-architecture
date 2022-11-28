@@ -34,14 +34,17 @@ spec:
             port:
               number: 9000
             host: arch-auth-service.arch-gur.svc.cluster.local
-    - match:
+    - name: "profile-health" # Указываем имя для применения EnvoyFilter
+      match:
         - uri:
-            prefix: /orders/
+            prefix: /profiles/health
+      rewrite:
+        uri: /health # Перезаписываем префикс с /auth/ на /, чтобы запросы шли в корень сервиса
       route:
         - destination:
             port:
               number: 9000
-            host: arch-order-service.arch-gur.svc.cluster.local
+            host: arch-profiles-service.arch-gur.svc.cluster.local
     - match:
         - uri:
             prefix: / # Остальные запросы направляем к profilesService
