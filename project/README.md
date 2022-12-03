@@ -44,6 +44,7 @@ I. Регистрация, логин, логаут пользователя
 - `kubectl create namespace arch-gur`
 - `helm install gorelov-kafka ./project/kafka/`
 - `helm install gorelov-redis ./project/redis/ -f ./project/redis/auth-values.yaml`
+- `helm install gorelov-redis ./project/redis/ -f ./project/redis/intercessor-values.yaml`  
 - `istioctl install --set profile=demo -y`
 - `istioctl manifest apply -f ./project/istio/istio-values.yaml`
 - `kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.11/samples/addons/prometheus.yaml`
