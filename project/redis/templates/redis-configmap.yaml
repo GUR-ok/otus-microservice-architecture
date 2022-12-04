@@ -17,7 +17,7 @@ data:
     dir /data
   slave.conf: |
     requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
-    slaveof redis-ss-0.redis-ss.redis 6379
+    slaveof {{ .Values.redis.name }}-ss-0.{{ .Values.redis.name }}-ss.redis 6379
     maxmemory 400mb
     maxmemory-policy allkeys-lru
     maxclients 20000

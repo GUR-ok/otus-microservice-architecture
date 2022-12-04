@@ -47,6 +47,16 @@ spec:
             host: arch-profiles-service.arch-gur.svc.cluster.local
     - match:
         - uri:
+            prefix: /intercessor # Запросы направляем к intercessor
+      rewrite:
+        uri: / # Перезаписываем префикс с /intercessor/ на /, чтобы запросы шли в корень сервиса
+      route:
+        - destination:
+            port:
+              number: 9000
+            host: arch-brokerage-intercessor-service.arch-gur.svc.cluster.local
+    - match:
+        - uri:
             prefix: / # Остальные запросы направляем к profilesService
       route:
         - destination:

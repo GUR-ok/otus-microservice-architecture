@@ -43,8 +43,7 @@ I. Регистрация, логин, логаут пользователя
 - `kubectl delete ingressClass nginx`
 - `kubectl create namespace arch-gur`
 - `helm install gorelov-kafka ./project/kafka/`
-- `helm install gorelov-redis ./project/redis/ -f ./project/redis/auth-values.yaml`
-- `helm install gorelov-redis ./project/redis/ -f ./project/redis/intercessor-values.yaml`  
+- `helm install gorelov-redis ./project/redis/ -f ./project/redis/values.yaml`
 - `istioctl install --set profile=demo -y`
 - `istioctl manifest apply -f ./project/istio/istio-values.yaml`
 - `kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.11/samples/addons/prometheus.yaml`
@@ -52,6 +51,7 @@ I. Регистрация, логин, логаут пользователя
 - `helm install gorelov-arch-istio ./project/istio/`
 - `helm install gorelov-arch-auth ./project/auth_deployment/`
 - `helm install gorelov-arch-profiles ./project/profiles_deployment/`
+- `helm install gorelov-arch-brokerage-intercessor ./project/intercessor/`
 
 #### Диагностика, проверка портов и istio:
 
@@ -66,12 +66,14 @@ I. Регистрация, логин, логаут пользователя
 - `kubectl port-forward -n arch-gur arch-profiles-deployment-67d58c5b57-x25q4 8080:8000`
 - `kubectl logs -f -n arch-gur arch-profiles-deployment-67d58c5b57-x25q4`  
 - `kubectl port-forward -n arch-gur redis-ss-0 6379:6379`
+- 'kubectl port-forward -n arch-gur arch-brokerage-intercessor-deployment-5cbc65d65d-jdfjf 8081:8000'
 - `istioctl dashboard kiali`
 
 ---
 
 #### Очистка пространства:
 
+- `helm uninstall gorelov-arch-brokerage-intercessor`
 - `helm uninstall gorelov-arch-auth`
 - `helm uninstall gorelov-arch-profiles`
 - `istioctl x uninstall --purge`
