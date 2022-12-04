@@ -235,6 +235,217 @@
 			]
 		},
 		{
+			"name": "Tests Auth Second User",
+			"item": [
+				{
+					"name": "Auth Register Second User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"pm.collectionVariables.set(\"profile_id_user2\", jsonData.profileId);\r",
+									"\r",
+									"pm.test(\"When register with new login Then status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"gur@mail.ru\",\r\n    \"login\": \"{{login}}2\",\r\n    \"password\": \"myPassword\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}:{{port}}/auth/register",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Auth Login Second User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"pm.collectionVariables.set(\"token_user2\", jsonData.token);\r",
+									"pm.collectionVariables.set(\"session\", jsonData.session);\r",
+									"\r",
+									"pm.test(\"When login with correct creds then status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"gur@mail.ru\",\r\n    \"login\": \"{{login}}2\",\r\n    \"password\": \"myPassword\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}:{{port}}/auth/login",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Read Profile Valid JWT Other User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});\r",
+									"\r",
+									"var msg = pm.response.text();\r",
+									"\r",
+									"pm.test(\"When try to read other profile then return unauthorized\", function () {\r",
+									"    pm.expect(msg).to.equal(\"Unauthorized!\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token_user2}}",
+								"type": "text"
+							},
+							{
+								"key": "x-auth-session",
+								"value": "{{session}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://{{baseUrl}}:{{port}}/profiles/{{profile_id}}",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"profiles",
+								"{{profile_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Profile Valid JWT Other user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 403\", function () {\r",
+									"    pm.response.to.have.status(403);\r",
+									"});\r",
+									"\r",
+									"var msg = pm.response.text();\r",
+									"\r",
+									"pm.test(\"When try to read other profile then return unauthorized\", function () {\r",
+									"    pm.expect(msg).to.equal(\"Unauthorized!\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token_user2}}",
+								"type": "text"
+							},
+							{
+								"key": "x-auth-session",
+								"value": "{{session}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"fullName\": \"{{new_fullName}}\",\r\n    \"age\": {{new_age}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}:{{port}}/profiles/{{profile_id}}",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"profiles",
+								"{{profile_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Profile",
 			"item": [
 				{
@@ -660,6 +871,285 @@
 						"method": "POST",
 						"header": [
 							{
+								"key": "x-auth-token",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "x-auth-session",
+								"value": "{{session}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"event\" : \"NEW_CLAIM_RECEIVED\",\r\n    \"productId\": \"123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}:{{port}}/intercessor/process/events",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"intercessor",
+								"process",
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Profile Valid JWT Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "x-auth-session",
+								"value": "{{session}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"fullName\": \"{{new_fullName}}\",\r\n    \"age\": {{new_age}},\r\n    \"firstName\":\"updated-name\",\r\n    \"passportNumber\":\"123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}:{{port}}/profiles/{{profile_id}}",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"profiles",
+								"{{profile_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Profile UPDATED",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "x-auth-session",
+								"value": "{{session}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"processId\":\"{{processId}}\",\r\n    \"event\" : \"PROFILE_UPDATED\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}:{{port}}/intercessor/process/events",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"intercessor",
+								"process",
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Product UPDATED",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "x-auth-session",
+								"value": "{{session}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"processId\":\"{{processId}}\",\r\n    \"event\" : \"PRODUCT_UPDATED\",\r\n    \"productId\" : \"23\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}:{{port}}/intercessor/process/events",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"intercessor",
+								"process",
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Agreement SIGNED",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "x-auth-session",
+								"value": "{{session}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"processId\":\"{{processId}}\",\r\n    \"event\" : \"AGREEMENT_SIGNED\",\r\n    \"signKey\" : \"0801\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}:{{port}}/intercessor/process/events",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"intercessor",
+								"process",
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Agreement CANCEL_SIGN",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "x-auth-session",
+								"value": "{{session}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"processId\":\"{{processId}}\",\r\n    \"event\" : \"CANCEL_SIGN\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}:{{port}}/intercessor/process/events",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"intercessor",
+								"process",
+								"events"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Intercessor local",
+			"item": [
+				{
+					"name": "New CLAIM",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"var jsonData = JSON.parse(responseBody);\r",
+									"pm.collectionVariables.set(\"processId\", jsonData.processId);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
 								"key": "profileId",
 								"value": "{{profile_id}}",
 								"type": "text"
@@ -813,212 +1303,6 @@
 					"response": []
 				}
 			]
-		},
-		{
-			"name": "Auth Register Second User",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"var jsonData = pm.response.json();\r",
-							"pm.collectionVariables.set(\"profile_id_user2\", jsonData.profileId);\r",
-							"\r",
-							"pm.test(\"When register with new login Then status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"email\": \"gur@mail.ru\",\r\n    \"login\": \"{{login}}2\",\r\n    \"password\": \"myPassword\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://{{baseUrl}}:{{port}}/auth/register",
-					"protocol": "http",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"port": "{{port}}",
-					"path": [
-						"auth",
-						"register"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Auth Login Second User",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"var jsonData = pm.response.json();\r",
-							"pm.collectionVariables.set(\"token_user2\", jsonData.token);\r",
-							"pm.collectionVariables.set(\"session\", jsonData.session);\r",
-							"\r",
-							"pm.test(\"When login with correct creds then status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"email\": \"gur@mail.ru\",\r\n    \"login\": \"{{login}}2\",\r\n    \"password\": \"myPassword\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://{{baseUrl}}:{{port}}/auth/login",
-					"protocol": "http",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"port": "{{port}}",
-					"path": [
-						"auth",
-						"login"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Read Profile Valid JWT Other User",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 403\", function () {\r",
-							"    pm.response.to.have.status(403);\r",
-							"});\r",
-							"\r",
-							"var msg = pm.response.text();\r",
-							"\r",
-							"pm.test(\"When try to read other profile then return unauthorized\", function () {\r",
-							"    pm.expect(msg).to.equal(\"Unauthorized!\");\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "GET",
-				"header": [
-					{
-						"key": "x-auth-token",
-						"value": "{{token_user2}}",
-						"type": "text"
-					},
-					{
-						"key": "x-auth-session",
-						"value": "{{session}}",
-						"type": "text"
-					}
-				],
-				"url": {
-					"raw": "http://{{baseUrl}}:{{port}}/profiles/{{profile_id}}",
-					"protocol": "http",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"port": "{{port}}",
-					"path": [
-						"profiles",
-						"{{profile_id}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Update Profile Valid JWT Other user",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 403\", function () {\r",
-							"    pm.response.to.have.status(403);\r",
-							"});\r",
-							"\r",
-							"var msg = pm.response.text();\r",
-							"\r",
-							"pm.test(\"When try to read other profile then return unauthorized\", function () {\r",
-							"    pm.expect(msg).to.equal(\"Unauthorized!\");\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "PATCH",
-				"header": [
-					{
-						"key": "x-auth-token",
-						"value": "{{token_user2}}",
-						"type": "text"
-					},
-					{
-						"key": "x-auth-session",
-						"value": "{{session}}",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"fullName\": \"{{new_fullName}}\",\r\n    \"age\": {{new_age}}\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://{{baseUrl}}:{{port}}/profiles/{{profile_id}}",
-					"protocol": "http",
-					"host": [
-						"{{baseUrl}}"
-					],
-					"port": "{{port}}",
-					"path": [
-						"profiles",
-						"{{profile_id}}"
-					]
-				}
-			},
-			"response": []
 		}
 	],
 	"event": [

@@ -52,6 +52,7 @@ I. Регистрация, логин, логаут пользователя
 - `helm install gorelov-arch-auth ./project/auth_deployment/`
 - `helm install gorelov-arch-profiles ./project/profiles_deployment/`
 - `helm install gorelov-arch-brokerage-intercessor ./project/intercessor/`
+- `helm install gorelov-arch-notification ./project/notification_deployment/`
 
 #### Диагностика, проверка портов и istio:
 
@@ -67,6 +68,7 @@ I. Регистрация, логин, логаут пользователя
 - `kubectl logs -f -n arch-gur arch-profiles-deployment-67d58c5b57-x25q4`  
 - `kubectl port-forward -n arch-gur redis-ss-0 6379:6379`
 - 'kubectl port-forward -n arch-gur arch-brokerage-intercessor-deployment-5cbc65d65d-jdfjf 8081:8000'
+-  Excamad url: http://localhost:8080/#/processdetail/  
 - `istioctl dashboard kiali`
 
 ---
@@ -76,6 +78,7 @@ I. Регистрация, логин, логаут пользователя
 - `helm uninstall gorelov-arch-brokerage-intercessor`
 - `helm uninstall gorelov-arch-auth`
 - `helm uninstall gorelov-arch-profiles`
+- `helm uninstall gorelov-arch-notification`  
 - `istioctl x uninstall --purge`
 - `kubectl delete namespace arch-gur`
 - `kubectl delete namespace istio-system`  
