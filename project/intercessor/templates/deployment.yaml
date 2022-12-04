@@ -27,14 +27,19 @@ spec:
             httpGet:
               port: 9090
               path: /health
-            initialDelaySeconds: 90
-            periodSeconds: 20
-            timeoutSeconds: 10
+            failureThreshold: 1
+            periodSeconds: 10
           readinessProbe:
             httpGet:
               port: 9090
               path: /health
-            initialDelaySeconds: 90
+            failureThreshold: 1
+            periodSeconds: 10
+          startupProbe:
+            httpGet:
+              port: 9090
+              path: /health
+            failureThreshold: 30
             periodSeconds: 10
           env:
             - name: SERVER_PORT
