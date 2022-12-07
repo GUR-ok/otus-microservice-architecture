@@ -1,0 +1,32 @@
+config:
+  name: arch-agreement-configmap
+  port: 8000
+  ddl: validate
+secret:
+  name: arch-agreement-secret
+deployment:
+  app:
+    image: gurok/arch_agreement
+    port: 8000
+    replicas: 2
+  db:
+    image: postgres:latest
+    port: 5432
+    replicas: 1
+service:
+  app:
+    name: arch-agreement-service
+    type: ClusterIP
+    protocol: TCP
+    port: 9000
+  db:
+    name: postgresql-agreement-service
+    host: "postgresql-agreement-service"
+    type: ClusterIP
+    port: 5432
+    sport: "5432"
+    dbname: arch_agreement_db
+    dbschema: public
+ingress:
+  name: otus-agreement-ingress
+  host: arch.homework

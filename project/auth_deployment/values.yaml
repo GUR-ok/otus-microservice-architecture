@@ -1,14 +1,14 @@
 config:
   name: arch-auth-configmap
   port: 8000
-  ddl: validate
+  ddl: create
 secret:
   name: arch-auth-secret
 deployment:
   app:
-    image: gurok/arch_auth:project.2
+    image: gurok/arch_auth_3
     port: 8000
-    replicas: 2
+    replicas: 1
     jwtsecret: secret
   db:
     image: postgres:latest

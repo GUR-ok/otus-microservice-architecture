@@ -1,0 +1,18 @@
+config:
+  name: arch-productdictionary-configmap
+  port: 8000
+  ddl: validate
+deployment:
+  app:
+    image: gurok/arch_productdictionary
+    port: 8000
+    replicas: 2
+service:
+  app:
+    name: arch-productdictionary-service
+    type: ClusterIP
+    protocol: TCP
+    port: 9000
+ingress:
+  name: otus-productdictionary-ingress
+  host: arch.homework

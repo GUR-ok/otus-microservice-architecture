@@ -1,0 +1,11 @@
+apiVersion: v2
+name: arch-claim
+version: 1.0.0
+description: ArchHomework Profiles
+type: application
+sources:
+  - https://github.com/GUR-ok/arch-claim
+maintainers:
+  - name: Yuriy Gorelov
+    email: gur-ok@yandex.ru
+appVersion: 1.0.0

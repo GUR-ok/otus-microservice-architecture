@@ -77,7 +77,11 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.secret.name }}
                   key: SPRING_DATASOURCE_PASSWORD
-
+            - name: SPRING_PROFILES_ACTIVE
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.config.name }}
+                  key: SPRING_PROFILES_ACTIVE
 ---
 apiVersion: apps/v1
 kind: StatefulSet

@@ -31,6 +31,9 @@ spec:
     - to:
         - operation:
             paths: ["/auth*"] # Разрешаем доступ к /auth всем запросам
+    - to:
+        - operation:
+            paths: [ "*/health" ] # Разрешаем доступ к */health всем запросам
     - from:
         - source:
             requestPrincipals: [ "*" ] # Запрещаем доступ к остальным ресурсам для запросов без JWT

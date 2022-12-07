@@ -1,11 +1,10 @@
-### Проект
+### Проект "Брокерское обслуживание клиентов с использованием микросервисной архитектуры"
+![img.png](img.png)
 
 ### **Компоненты приложения:**
-![diag.png](diag.png)
 
 - Сервис Аутентификации (СА) https://github.com/GUR-ok/arch-auth https://hub.docker.com/repository/docker/gurok/arch_auth 
 - Сервис Управления Профилем (СУП) https://github.com/GUR-ok/arch-profiles https://hub.docker.com/repository/docker/gurok/arch_profiles_2
-- Сервис Управления Заказом (СУЗ) https://github.com/GUR-ok/arch-order https://hub.docker.com/repository/docker/gurok/arch_order
 - БД: каждый микросервис подключен к своей БД:
   СА хранит данные юзеров (userId, login, password, profileId), СУП хранит данные профиля (profileId, fullName, age,
   ...).
@@ -14,10 +13,9 @@
 - Redis для хранения данных сессии и jwt. СА подключен в redis.
 - Брокер сообщений Kafka для связи микросервисов.
 
-
 ### **Описание приложения:**
 I. Регистрация, логин, логаут пользователя
-![sequence.png](sequence.png)
+
 1) Запросы на /auth/ не требуют авторизации (перенаправляются на СА), остальные запросы требуют передачи валидного jwt (
    перенаправляются на СУП).
 2) Пользователю доступны API /auth/register, /auth/login, /auth/logout, а также API управления Профилем с доступом по токену
@@ -37,32 +35,40 @@ I. Регистрация, логин, логаут пользователя
    запрашиваемого профиля. В случае попытки запроса чужого профиля запрос считается 
    неавторизованным. Верификация и проверка подписи jwt в СУП не производится, 
    за верификацию отвечает Istio.
-9) СУП подключен к брокеру сообщений Kafka.  
-   
-II. Создание заказа
-![sequence2.png](sequence2.png)
-1) Ключ идемпотентности в реквесте
-2) Сохранение ключа и проверка
+9) СУП подключен к брокеру сообщений Kafka.
 
 #### Инструкция по запуску:
 
-- `minikube start`
+- `minikube start --vm-driver virtualbox --no-vtx-check --memory=24Gb --cpus=6 --disk-size=60Gb`
 - `kubectl delete namespace ingress-nginx`
 - `kubectl delete ingressClass nginx`
-- `kubectl create namespace arch-gur`
-- `helm install gorelov-kafka ./project/kafka/`
-- `helm install gorelov-redis ./project/redis/ -f ./project/redis/auth-values.yaml`
-- `helm install gorelov-redis-order ./project/redis/ -f ./project/redis/order-values.yaml`
 - `istioctl install --set profile=demo -y`
 - `istioctl manifest apply -f ./project/istio/istio-values.yaml`
+
 - `kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.11/samples/addons/prometheus.yaml`
 - `kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.11/samples/addons/kiali.yaml`
-- `helm install gorelov-arch-project ./project/istio/`
+
+- `kubectl create namespace arch-gur`
+- `helm install gorelov-arch-istio ./project/istio/`
+- `helm install gorelov-arch-minio ./project/minio/`
+- `helm install gorelov-kafka ./project/kafka/`
+- `helm install gorelov-redis ./project/redis/ -f ./project/redis/values.yaml`
+  
 - `helm install gorelov-arch-auth ./project/auth_deployment/`
 - `helm install gorelov-arch-profiles ./project/profiles_deployment/`
+- `helm install gorelov-arch-brokerage-intercessor ./project/intercessor/`
+- `helm install gorelov-arch-notification ./project/notification_deployment/`
+- `helm install gorelov-arch-document-generator ./project/services/documentgenerator_deployment/`
+
+- `helm install gorelov-arch-claim ./project/services/claim_deployment/`
+- `helm install gorelov-arch-product-dictionary ./project/services/productdictionary_deployment/`
+- `helm install gorelov-arch-stoplists ./project/service/stoplist_deployment/`
+- `helm install gorelov-arch-brokerage-account ./project/services/brokerageaccount_deployment/`
+- `helm install gorelov-arch-agreement ./project/services/agreement_deployment/`
 
 #### Диагностика, проверка портов и istio:
-![cluster.png](cluster.png)
+
+![img_1.png](img_1.png)
 
 - `kubectl get virtualService`
 - `kubectl get svc -n istio-system`
@@ -71,20 +77,37 @@ II. Создание заказа
   kafka-manager                 NodePort    10.101.112.105   <none>        9000:30170/TCP
   Для входа в kafka-manager http://arch.homework:30170/
 - `kubectl port-forward -n arch-gur arch-profiles-deployment-67d58c5b57-x25q4 8080:8000`
-- http://localhost:8080/swagger-ui/index.html#/kafka-controller/sendString
 - `kubectl logs -f -n arch-gur arch-profiles-deployment-67d58c5b57-x25q4`  
 - `kubectl port-forward -n arch-gur redis-ss-0 6379:6379`
+- 'kubectl port-forward -n arch-gur arch-brokerage-intercessor-deployment-5cbc65d65d-jdfjf 8081:8000'
+-  Excamad url: http://localhost:8080/#/processdetail/  
 - `istioctl dashboard kiali`
-
+  
+  http://arch.homework:30002/minio/
+  kubectl port-forward -n arch-gur arch-brokerage-intercessor-deployment-7c5d669b64-dqglz 8081:8000
+  kubectl port-forward -n arch-gur arch-notification-postgresql-deployment-0 5435:5432
+  
+    minikube addons enable metrics-server
+    kubectl top node minikube
+    kubectl describe node minikube
 ---
+
 #### Очистка пространства:
 
-- `helm uninstall gorelov-arch-project`
+- `helm uninstall gorelov-arch-agreement`
+- `helm uninstall gorelov-arch-claim`
+- `helm uninstall gorelov-arch-document-generator`
+- `helm uninstall gorelov-arch-product-dictionary`
+- `helm uninstall gorelov-arch-stoplists`
+- `helm uninstall gorelov-arch-brokerage-account`
+- `helm uninstall gorelov-arch-brokerage-intercessor`
 - `helm uninstall gorelov-arch-auth`
 - `helm uninstall gorelov-arch-profiles`
+- `helm uninstall gorelov-arch-notification`  
+- `helm uninstall gorelov-arch-minio`
 - `istioctl x uninstall --purge`
 - `kubectl delete namespace arch-gur`
 - `kubectl delete namespace istio-system`  
 - `helm uninstall gorelov-kafka`
 - `helm uninstall gorelov-redis`
-- `helm uninstall gorelov-redis-order`
+- `helm uninstall gorelov-arch-istio`

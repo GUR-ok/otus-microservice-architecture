@@ -1,10 +1,10 @@
 apiVersion: v2
-name: arch-order
+name: arch-brokerage-intercessor
 version: 1.0.0
 description: ArchHomework Profiles
 type: application
 sources:
-  - https://github.com/GUR-ok/arch-order
+  - https://github.com/GUR-ok/arch-brokerage-interecessor
 maintainers:
   - name: Yuriy Gorelov
     email: gur-ok@yandex.ru

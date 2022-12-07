@@ -27,15 +27,20 @@ spec:
             httpGet:
               port: {{ .Values.deployment.app.port }}
               path: /health
-            initialDelaySeconds: 60
-            periodSeconds: 15
-            timeoutSeconds: 5
+            failureThreshold: 1
+            periodSeconds: 10
           readinessProbe:
             httpGet:
               port: {{ .Values.deployment.app.port }}
               path: /health
-            initialDelaySeconds: 60
-            periodSeconds: 5
+            failureThreshold: 1
+            periodSeconds: 10
+          startupProbe:
+            httpGet:
+              port: {{ .Values.deployment.app.port }}
+              path: /health
+            failureThreshold: 30
+            periodSeconds: 10
           env:
             - name: SERVER_PORT
               valueFrom:
@@ -72,16 +77,6 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.secret.name }}
                   key: SPRING_DATASOURCE_PASSWORD
-            - name: REDIS_SERVER
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.config.name }}
-                  key: REDIS_SERVER
-            - name: REDIS_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.secret.name }}
-                  key: REDIS_PASSWORD
             - name: SPRING_PROFILES_ACTIVE
               valueFrom:
                 configMapKeyRef:

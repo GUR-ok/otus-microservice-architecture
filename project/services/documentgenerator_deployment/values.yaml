@@ -1,0 +1,18 @@
+config:
+  name: arch-documentgenerator-configmap
+  port: 8000
+  ddl: validate
+deployment:
+  app:
+    image: gurok/arch_documentgenerator
+    port: 8000
+    replicas: 1
+service:
+  app:
+    name: arch-documentgenerator-service
+    type: ClusterIP
+    protocol: TCP
+    port: 9000
+ingress:
+  name: otus-documentgenerator-ingress
+  host: arch.homework

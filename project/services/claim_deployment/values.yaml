@@ -1,31 +1,32 @@
 config:
-  name: arch-order-configmap
+  name: arch-claim-configmap
   port: 8000
   ddl: validate
 secret:
-  name: arch-order-secret
+  name: arch-claim-secret
 deployment:
   app:
-    type: NodePort
-    image: gurok/arch_order
+    image: gurok/arch_claim
     port: 8000
     replicas: 2
   db:
-    type: NodePort
     image: postgres:latest
     port: 5432
     replicas: 1
 service:
   app:
-    name: arch-order-service
-    type: NodePort
+    name: arch-claim-service
+    type: ClusterIP
     protocol: TCP
     port: 9000
   db:
-    name: postgresql-order-service
-    host: "postgresql-order-service"
+    name: postgresql-claim-service
+    host: "postgresql-claim-service"
     type: ClusterIP
     port: 5432
     sport: "5432"
-    dbname: arch_order_db
+    dbname: arch_claim_db
     dbschema: public
+ingress:
+  name: otus-claim-ingress
+  host: arch.homework
