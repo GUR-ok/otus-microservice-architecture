@@ -1,0 +1,32 @@
+config:
+  name: arch-claim-configmap
+  port: 8000
+  ddl: validate
+secret:
+  name: arch-claim-secret
+deployment:
+  app:
+    image: gurok/arch_claim
+    port: 8000
+    replicas: 2
+  db:
+    image: postgres:latest
+    port: 5432
+    replicas: 1
+service:
+  app:
+    name: arch-claim-service
+    type: ClusterIP
+    protocol: TCP
+    port: 9000
+  db:
+    name: postgresql-claim-service
+    host: "postgresql-claim-service"
+    type: ClusterIP
+    port: 5432
+    sport: "5432"
+    dbname: arch_claim_db
+    dbschema: public
+ingress:
+  name: otus-claim-ingress
+  host: arch.homework

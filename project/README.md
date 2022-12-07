@@ -1,4 +1,5 @@
 ### Проект "Брокерское обслуживание клиентов с использованием микросервисной архитектуры"
+![img.png](img.png)
 
 ### **Компоненты приложения:**
 
@@ -38,25 +39,36 @@ I. Регистрация, логин, логаут пользователя
 
 #### Инструкция по запуску:
 
-- `minikube start`
+- `minikube start --vm-driver virtualbox --no-vtx-check --memory=24Gb --cpus=6 --disk-size=60Gb`
 - `kubectl delete namespace ingress-nginx`
 - `kubectl delete ingressClass nginx`
-- `kubectl create namespace arch-gur`
-- `helm install gorelov-kafka ./project/kafka/`
-- `helm install gorelov-redis ./project/redis/ -f ./project/redis/values.yaml`
 - `istioctl install --set profile=demo -y`
 - `istioctl manifest apply -f ./project/istio/istio-values.yaml`
+
 - `kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.11/samples/addons/prometheus.yaml`
 - `kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.11/samples/addons/kiali.yaml`
+
+- `kubectl create namespace arch-gur`
 - `helm install gorelov-arch-istio ./project/istio/`
+- `helm install gorelov-arch-minio ./project/minio/`
+- `helm install gorelov-kafka ./project/kafka/`
+- `helm install gorelov-redis ./project/redis/ -f ./project/redis/values.yaml`
+  
 - `helm install gorelov-arch-auth ./project/auth_deployment/`
 - `helm install gorelov-arch-profiles ./project/profiles_deployment/`
 - `helm install gorelov-arch-brokerage-intercessor ./project/intercessor/`
 - `helm install gorelov-arch-notification ./project/notification_deployment/`
+- `helm install gorelov-arch-document-generator ./project/services/documentgenerator_deployment/`
+
+- `helm install gorelov-arch-claim ./project/services/claim_deployment/`
+- `helm install gorelov-arch-product-dictionary ./project/services/productdictionary_deployment/`
+- `helm install gorelov-arch-stoplists ./project/service/stoplist_deployment/`
+- `helm install gorelov-arch-brokerage-account ./project/services/brokerageaccount_deployment/`
+- `helm install gorelov-arch-agreement ./project/services/agreement_deployment/`
 
 #### Диагностика, проверка портов и istio:
 
-![cluster.png](cluster.png)
+![img_1.png](img_1.png)
 
 - `kubectl get virtualService`
 - `kubectl get svc -n istio-system`
@@ -70,15 +82,29 @@ I. Регистрация, логин, логаут пользователя
 - 'kubectl port-forward -n arch-gur arch-brokerage-intercessor-deployment-5cbc65d65d-jdfjf 8081:8000'
 -  Excamad url: http://localhost:8080/#/processdetail/  
 - `istioctl dashboard kiali`
-
+  
+  http://arch.homework:30002/minio/
+  kubectl port-forward -n arch-gur arch-brokerage-intercessor-deployment-7c5d669b64-dqglz 8081:8000
+  kubectl port-forward -n arch-gur arch-notification-postgresql-deployment-0 5435:5432
+  
+    minikube addons enable metrics-server
+    kubectl top node minikube
+    kubectl describe node minikube
 ---
 
 #### Очистка пространства:
 
+- `helm uninstall gorelov-arch-agreement`
+- `helm uninstall gorelov-arch-claim`
+- `helm uninstall gorelov-arch-document-generator`
+- `helm uninstall gorelov-arch-product-dictionary`
+- `helm uninstall gorelov-arch-stoplists`
+- `helm uninstall gorelov-arch-brokerage-account`
 - `helm uninstall gorelov-arch-brokerage-intercessor`
 - `helm uninstall gorelov-arch-auth`
 - `helm uninstall gorelov-arch-profiles`
 - `helm uninstall gorelov-arch-notification`  
+- `helm uninstall gorelov-arch-minio`
 - `istioctl x uninstall --purge`
 - `kubectl delete namespace arch-gur`
 - `kubectl delete namespace istio-system`  
