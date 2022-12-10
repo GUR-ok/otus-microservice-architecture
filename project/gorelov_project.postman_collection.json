@@ -7,6 +7,147 @@
 	},
 	"item": [
 		{
+			"name": "Health",
+			"item": [
+				{
+					"name": "Health Auth",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"var health = (jsonData.status);\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Status UP\", function () {\r",
+									"    pm.expect(health).to.equal('OK')\r",
+									"    });\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}:{{port}}/auth/health",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"auth",
+								"health"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "asfa",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Health Profile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"var health = (jsonData.status);\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Status UP\", function () {\r",
+									"    pm.expect(health).to.equal('OK')\r",
+									"    });\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}:{{port}}/profiles/health",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"profiles",
+								"health"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "asfa",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Auth",
 			"item": [
 				{
@@ -709,147 +850,6 @@
 			]
 		},
 		{
-			"name": "Health",
-			"item": [
-				{
-					"name": "Health Auth",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var jsonData = pm.response.json();\r",
-									"var health = (jsonData.status);\r",
-									"\r",
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"pm.test(\"Status UP\", function () {\r",
-									"    pm.expect(health).to.equal('OK')\r",
-									"    });\r",
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://{{baseUrl}}:{{port}}/auth/health",
-							"protocol": "http",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"port": "{{port}}",
-							"path": [
-								"auth",
-								"health"
-							],
-							"query": [
-								{
-									"key": "",
-									"value": "asfa",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Health Profile",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"var jsonData = pm.response.json();\r",
-									"var health = (jsonData.status);\r",
-									"\r",
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"pm.test(\"Status UP\", function () {\r",
-									"    pm.expect(health).to.equal('OK')\r",
-									"    });\r",
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "http://{{baseUrl}}:{{port}}/profiles/health",
-							"protocol": "http",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"port": "{{port}}",
-							"path": [
-								"profiles",
-								"health"
-							],
-							"query": [
-								{
-									"key": "",
-									"value": "asfa",
-									"disabled": true
-								}
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
 			"name": "Intercessor",
 			"item": [
 				{
@@ -883,7 +883,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"event\" : \"NEW_CLAIM_RECEIVED\",\r\n    \"productId\": \"123\"\r\n}",
+							"raw": "{\r\n    \"event\" : \"NEW_CLAIM_RECEIVED\",\r\n    \"productId\": \"111\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -940,7 +940,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"fullName\": \"{{new_fullName}}\",\r\n    \"age\": {{new_age}},\r\n    \"firstName\":\"updated-name\",\r\n    \"passportNumber\":\"123456\"\r\n}",
+							"raw": "{\r\n    \"fullName\": \"{{new_fullName}}\",\r\n    \"age\": {{new_age}},\r\n    \"firstName\":\"Иван\",\r\n    \"passportNumber\":\"123456\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1021,7 +1021,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"processId\":\"{{processId}}\",\r\n    \"event\" : \"PRODUCT_UPDATED\",\r\n    \"productId\" : \"23\"\r\n}",
+							"raw": "{\r\n    \"processId\":\"{{processId}}\",\r\n    \"event\" : \"PRODUCT_UPDATED\",\r\n    \"productId\" : \"111\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1062,7 +1062,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"processId\":\"{{processId}}\",\r\n    \"event\" : \"AGREEMENT_SIGNED\",\r\n    \"signKey\" : \"0801\"\r\n}",
+							"raw": "{\r\n    \"processId\":\"{{processId}}\",\r\n    \"event\" : \"AGREEMENT_SIGNED\",\r\n    \"signKey\" : \"6893\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1157,7 +1157,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"event\" : \"NEW_CLAIM_RECEIVED\",\r\n    \"productId\": \"123\"\r\n}",
+							"raw": "{\r\n    \"event\" : \"NEW_CLAIM_RECEIVED\",\r\n    \"productId\": \"111\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1216,13 +1216,12 @@
 							{
 								"key": "profileId",
 								"value": "{{profile_id}}",
-								"type": "text",
-								"disabled": true
+								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"processId\":\"{{processId}}\",\r\n    \"event\" : \"PRODUCT_UPDATED\",\r\n    \"productId\" : \"23\"\r\n}",
+							"raw": "{\r\n    \"processId\":\"{{processId}}\",\r\n    \"event\" : \"PRODUCT_UPDATED\",\r\n    \"productId\" : \"111\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1248,10 +1247,16 @@
 					"name": "Agreement SIGNED",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "profileId",
+								"value": "{{profile_id}}",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"processId\":\"{{processId}}\",\r\n    \"event\" : \"AGREEMENT_SIGNED\",\r\n    \"signKey\" : \"0801\"\r\n}",
+							"raw": "{\r\n    \"processId\":\"{{processId}}\",\r\n    \"event\" : \"AGREEMENT_SIGNED\",\r\n    \"signKey\" : \"5082\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1277,7 +1282,13 @@
 					"name": "Agreement CANCEL_SIGN",
 					"request": {
 						"method": "POST",
-						"header": [],
+						"header": [
+							{
+								"key": "profileId",
+								"value": "{{profile_id}}",
+								"type": "text"
+							}
+						],
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n    \"processId\":\"{{processId}}\",\r\n    \"event\" : \"CANCEL_SIGN\"\r\n}",
@@ -1352,11 +1363,6 @@
 			"type": "string"
 		},
 		{
-			"key": "randomNum",
-			"value": "",
-			"type": "string"
-		},
-		{
 			"key": "profile_id",
 			"value": "",
 			"type": "string"
@@ -1382,16 +1388,15 @@
 			"type": "string"
 		},
 		{
-			"key": "session",
-			"value": "",
-			"type": "string"
-		},
-		{
-			"key": "x-auth-session",
+			"key": "processId",
 			"value": ""
 		},
 		{
-			"key": "processId",
+			"key": "randomNum",
+			"value": ""
+		},
+		{
+			"key": "session",
 			"value": ""
 		}
 	]
