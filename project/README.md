@@ -5,21 +5,44 @@
 
 ![img_2.png](img_2.png)
 
-#### *Основные сервисы:*
-- Сервис Аутентификации (СА) https://github.com/GUR-ok/arch-auth https://hub.docker.com/repository/docker/gurok/arch_auth _3
-- Сервис Управления Профилем (СУП) https://github.com/GUR-ok/arch-profiles https://hub.docker.com/repository/docker/gurok/arch_profiles_3
-- Сервис-оркестартор распределенного процесса Интцерцессор https://github.com/GUR-ok/arch-brokerage-intercessor https://hub.docker.com/repository/docker/gurok/arch_brokerage_intercessor
-- Сервис Заявки. https://github.com/GUR-ok/arch-claim https://hub.docker.com/repository/docker/gurok/arch_claim
-- Сервис Уведомлений. https://github.com/GUR-ok/arch-notification https://hub.docker.com/repository/docker/gurok/arch_notification_2
-- Сервис генерации Документов. https://github.com/GUR-ok/arch-documentgenerator https://hub.docker.com/repository/docker/gurok/arch_documentgenerator
+#### **Основные сервисы:**
+- *Сервис Аутентификации (СА)*
+  
+  Исходники: https://github.com/GUR-ok/arch-auth
+  
+  Образ: https://hub.docker.com/repository/docker/gurok/arch_auth_3
+- *Сервис Управления Профилем (СУП)*
+  
+  Исходники: https://github.com/GUR-ok/arch-profiles
+  
+  Образ: https://hub.docker.com/repository/docker/gurok/arch_profiles_3
+- *Интерцессор. Сервис-оркестартор распределенного процесса* 
 
-#### *Дополнительные сервисы (в проекте застабированы для экономии ресурсов):*
+  Исходники: https://github.com/GUR-ok/arch-brokerage-intercessor
+  Образ: https://hub.docker.com/repository/docker/gurok/arch_brokerage_intercessor
+- *Сервис Заявки*
+  
+  Исходники: https://github.com/GUR-ok/arch-claim
+  
+  Образ: https://hub.docker.com/repository/docker/gurok/arch_claim
+- *Сервис Уведомлений*
+  
+  Исходники: https://github.com/GUR-ok/arch-notification
+  
+  Образ: https://hub.docker.com/repository/docker/gurok/arch_notification_2
+- *Сервис генерации Документов*
+  
+  Исходники: https://github.com/GUR-ok/arch-documentgenerator
+  
+  Образ: https://hub.docker.com/repository/docker/gurok/arch_documentgenerator
+
+#### **Дополнительные сервисы (в проекте застабированы для экономии ресурсов):**
 - Сервис проверки по Стоп-листам https://github.com/GUR-ok/arch-stoplist
 - Сервис Договора https://github.com/GUR-ok/arch-agreement
 - Сервис Брокерских счетов https://github.com/GUR-ok/arch-brokerageaccount
 - Сервис справочник Тарифов https://github.com/GUR-ok/arch-productdictionary
 
-#### *Базы Данных:*
+#### **Базы Данных:**
 - Реляционные БД (PostgreSQL):
   
   СА хранит данные юзеров (userId, login, password, profileId);
@@ -36,7 +59,7 @@
 
   Redis для хранения данных сессии и jwt. Используется Сервисом Авторизации
 
-#### *Инфраструктура:*
+#### **Инфраструктура:**
 - Настроенный Istio API-gateway с проверкой авторизации по jwt.
 - Envoy-фильтр, умеющий добавлять кастомные хедеры, проводить доп.валидацию сессии и т.д. Используется для получения profileId из токена и проброске upstream хедером в микросервисы
 - Брокер сообщений Kafka для связи микросервисов.
@@ -92,11 +115,11 @@ I. Регистрация, логин, логаут пользователя
 
 Пуск основных сервисов:
 
-- `helm install gorelov-arch-auth ./project/auth_deployment/`
-- `helm install gorelov-arch-profiles ./project/profiles_deployment/`
-- `helm install gorelov-arch-brokerage-intercessor ./project/intercessor/`
+- `helm install gorelov-arch-auth ./project/services/auth_deployment/`
+- `helm install gorelov-arch-profiles ./project/services/profiles_deployment/`
+- `helm install gorelov-arch-brokerage-intercessor ./project/services/intercessor/`
 - `helm install gorelov-arch-claim ./project/services/claim_deployment/`
-- `helm install gorelov-arch-notification ./project/notification_deployment/`
+- `helm install gorelov-arch-notification ./project/services/notification_deployment/`
 - `helm install gorelov-arch-document-generator ./project/services/documentgenerator_deployment/`
 
 Дополнительные сервисы (в проекте застабированы для экономии ресурсов):
@@ -152,14 +175,12 @@ I. Регистрация, логин, логаут пользователя
 - `helm uninstall gorelov-arch-brokerage-intercessor`
 - `helm uninstall gorelov-arch-auth`
 - `helm uninstall gorelov-arch-profiles`
-- `helm uninstall gorelov-arch-notification`  
-
+- `helm uninstall gorelov-arch-notification`
 
 - `helm uninstall gorelov-arch-product-dictionary`
 - `helm uninstall gorelov-arch-stoplists`
 - `helm uninstall gorelov-arch-agreement`
 - `helm uninstall gorelov-arch-brokerage-account`
-  
 
 - `helm uninstall gorelov-arch-minio`
 - `istioctl x uninstall --purge`
