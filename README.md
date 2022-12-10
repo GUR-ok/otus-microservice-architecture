@@ -11,4 +11,4 @@
 - [hw8](https://github.com/GUR-ok/otus-microservice-architecture/tree/master/hw8) - Домашнее задание №8. Distributed transactions
 - [hw9](https://github.com/GUR-ok/otus-microservice-architecture/tree/master/hw9) - Домашнее задание №9. StreamProcessing. Events
 ---
-- [project](https://github.com/GUR-ok/otus-microservice-architecture/tree/master/project) - Курсовая работа (в разработке) 
+- [project](https://github.com/GUR-ok/otus-microservice-architecture/tree/master/project) - Курсовой проект "Брокерское обслуживание клиентов с использованием микросервисной архитектуры"
