@@ -1,7 +1,7 @@
 config:
   name: arch-auth-configmap
   port: 8000
-  ddl: create
+  ddl: validate
 secret:
   name: arch-auth-secret
 deployment:

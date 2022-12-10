@@ -1,7 +1,7 @@
 config:
   name: arch-profiles-configmap
   port: 8000
-  ddl: create
+  ddl: validate
 secret:
   name: arch-profiles-secret
 deployment:

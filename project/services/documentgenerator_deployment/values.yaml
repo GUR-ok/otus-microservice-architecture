@@ -1,7 +1,6 @@
 config:
   name: arch-documentgenerator-configmap
   port: 8000
-  ddl: validate
 deployment:
   app:
     image: gurok/arch_documentgenerator
