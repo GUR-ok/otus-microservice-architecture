@@ -212,6 +212,9 @@ II. Создание заявки
 - `helm install gorelov-arch-notification ./project/services/notification_deployment/`
 - `helm install gorelov-arch-document-generator ./project/services/documentgenerator_deployment/`
 
+Full Start:
+`helm install gorelov-arch-auth ./project/services/auth_deployment/ && helm install gorelov-arch-profiles ./project/services/profiles_deployment/ && helm install gorelov-arch-brokerage-intercessor ./project/services/intercessor/ && helm install gorelov-arch-claim ./project/services/claim_deployment/ && helm install gorelov-arch-notification ./project/services/notification_deployment/ && helm install gorelov-arch-document-generator ./project/services/documentgenerator_deployment/`
+
 Дополнительные сервисы (в проекте застабированы для экономии ресурсов):
 
 - `helm install gorelov-arch-product-dictionary ./project/services/productdictionary_deployment/`
@@ -227,6 +230,9 @@ II. Создание заявки
 - `kubectl get svc -n istio-system`(должен быть порт 30001)
 - `kubectl get svc -n arch-gur`
   
+  Если после рестарта ноды истио не работает, то выполнить заново
+- `istioctl install --set profile=demo -y`
+  
   kafka-manager                 NodePort    10.101.112.105   <none>        9000:30170/TCP
   
   Для входа в kafka-manager http://arch.homework:30170/
@@ -234,6 +240,9 @@ II. Создание заявки
 - Проброс портов на локалхост: `kubectl port-forward -n arch-gur redis-ss-0 6379:6379`
 - `istioctl dashboard kiali`
 - `kubectl describe node minikube`
+
+- `kubectl port-forward -n arch-gur arch-profiles-postgresql-deployment-0 5433:5432`
+- `kubectl port-forward -n arch-gur arch-auth-postgresql-deployment-0 5439:5432`
 
 Для демонстрации процесса:
 1. Для управления процессами. Запустить Excamad в докере на локальной машине `docker run -d -p 8080:8080 kotovdenis/excamad:latest`
@@ -281,3 +290,6 @@ II. Создание заявки
 - `helm uninstall gorelov-arch-istio`
 - `kubectl delete namespace arch-gur`
 - `kubectl delete namespace istio-system` 
+
+Stop services:
+`helm uninstall gorelov-arch-claim && helm uninstall gorelov-arch-document-generator && helm uninstall gorelov-arch-brokerage-intercessor && helm uninstall gorelov-arch-auth && helm uninstall gorelov-arch-profiles && helm uninstall gorelov-arch-notification`
