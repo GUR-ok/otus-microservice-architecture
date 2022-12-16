@@ -1,0 +1,238 @@
+asyncapi: '2.4.0'
+info:
+  title: Brokerage-Intercessor
+  version: '1.0.0'
+  description: |
+    Brokerage-Intercessor
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+
+servers:
+  test:
+    url: kafka:9094
+    protocol: kafka
+    description: Test broker
+
+defaultContentType: application/json
+
+channels:
+  brokerage-notification:
+    publish:
+      operationId: BrokerageNotificationEvent
+      message:
+        $ref: '#/components/messages/BrokerageNotificationEventData'
+  brokerage-claim/ClaimInProgressEvent:
+    publish:
+      operationId: ClaimInProgressEvent
+      message:
+        $ref: '#/components/messages/ClaimInProgressEventData'
+  brokerage-claim/ClaimWaitForSignEvent:
+    publish:
+      operationId: ClaimWaitForSignEvent
+      message:
+        $ref: '#/components/messages/ClaimWaitForSignEventData'
+  brokerage-claim/ClaimCancelEvent:
+    publish:
+      operationId: ClaimCancelEvent
+      message:
+        $ref: '#/components/messages/ClaimCancelEventData'
+  brokerage-claim/ClaimDoneEvent:
+    publish:
+      operationId: ClaimDoneEvent
+      message:
+        $ref: '#/components/messages/ClaimDoneEventData'
+  brokerage-claim/ClaimRejectedEvent:
+    publish:
+      operationId: ClaimRejectedEvent
+      message:
+        $ref: '#/components/messages/ClaimRejectedEventData'
+  brokerage-claim/ClaimUpdateEvent:
+    publish:
+      operationId: ClaimUpdateEvent
+      message:
+        $ref: '#/components/messages/ClaimUpdateEventData'
+  brokerage-intercessor:
+    subscribe:
+      operationId: ProfileUpdatedEvent
+      message:
+        $ref: '#/components/messages/ProfileUpdatedEventData'
+
+components:
+  messages:
+    BrokerageNotificationEventData:
+      name: notifyClient
+      title: Notification
+      summary: Notification
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/BrokerageNotificationEventData'
+    ClaimInProgressEventData:
+      name: claimInProgress
+      title: Claim in progress
+      summary: Claim in progress
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/ClaimInProgressEventData'
+    ClaimWaitForSignEventData:
+      name: claimWaitForSign
+      title: Wait for sign
+      summary: Wait for sign
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/ClaimWaitForSignEventData'
+    ClaimCancelEventData:
+      name: claimCancel
+      title: Cancel claim
+      summary: Cancel claim
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/ClaimCancelEventData'
+    ClaimDoneEventData:
+      name: claimDone
+      title: Complete claim
+      summary: Complete claim
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/ClaimDoneEventData'
+    ClaimRejectedEventData:
+      name: claimRejected
+      title: Reject claim
+      summary: Reject claim
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/ClaimRejectedEventData'
+    ClaimUpdateEventData:
+      name: claimUpdate
+      title: Update claim
+      summary: Update claim
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/ClaimUpdateEventData'
+    ProfileUpdatedEventData:
+      name: profileUpdated
+      title: Profile updated
+      summary: Profile updated
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/ProfileUpdatedEventData'
+
+  schemas:
+    BrokerageNotificationEventData:
+      type: object
+      properties:
+        accountId:
+          type: string
+          format: uuid
+        message:
+          type: string
+        event:
+          type: string
+          enum:
+            - BROKERAGE_NOTIFICATION
+          example: BROKERAGE_NOTIFICATION
+
+    ClaimInProgressEventData:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        event:
+          type: string
+          enum:
+            - CLAIM_IN_PROGRESS
+          example: CLAIM_IN_PROGRESS
+
+    ClaimWaitForSignEventData:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        event:
+          type: string
+          enum:
+            - CLAIM_WAIT_FOR_SIGN
+          example: CLAIM_WAIT_FOR_SIGN
+
+    ClaimCancelEventData:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        event:
+          type: string
+          enum:
+            - CLAIM_CANCEL
+          example: CLAIM_CANCEL
+
+    ClaimDoneEventData:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        UpdateClaimRequest:
+          type: object
+          properties:
+            agreementNumber:
+              type: integer
+              format: int64
+            brokerageAccountId:
+              type: string
+              format: uuid
+            firstName:
+              type: string
+        event:
+          type: string
+          enum:
+            - CLAIM_DONE
+          example: CLAIM_DONE
+
+    ClaimRejectedEventData:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        event:
+          type: string
+          enum:
+            - CLAIM_REJECTED
+          example: CLAIM_REJECTED
+
+    ClaimUpdateEventData:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        UpdateClaimRequest:
+          type: object
+          properties:
+            agreementNumber:
+              type: integer
+              format: int64
+            brokerageAccountId:
+              type: string
+              format: uuid
+            firstName:
+              type: string
+        event:
+          type: string
+          enum:
+            - UPDATE_CLAIM
+          example: UPDATE_CLAIM
+
+    ProfileUpdatedEventData:
+      type: object
+      properties:
+        processId:
+          type: string
+        event:
+          type: string
+          enum:
+            - PROFILE_UPDATED
+          example: PROFILE_UPDATED

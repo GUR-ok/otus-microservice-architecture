@@ -1,0 +1,147 @@
+openapi: 3.0.0
+info:
+  contact:
+    name: Yuriy Gorelov
+    email: gur-ok@yandex.ru
+  title: Сервис Заявки
+  version: 0.1.0
+servers:
+  - url: http://arch.homework:30001
+    description: Kubernetes cluster
+paths:
+  /claims:
+    post:
+      tags:
+        - claim-controller-impl
+      summary: Создать новую заявку
+      operationId: createClaim
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateClaimRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: uuid
+  /health:
+    get:
+      tags:
+        - health-check
+      operationId: health
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Health'
+  /claims/{profileId}:
+    get:
+      tags:
+        - claim-controller-impl
+      summary: Найти заявки по профилю пользователя
+      operationId: findClaims
+      parameters:
+        - name: profileId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: states
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/FindClaimsResponse'
+  /claim/{claimId}:
+    get:
+      tags:
+        - claim-controller-impl
+      summary: Получить данные заявки
+      operationId: findClaim
+      parameters:
+        - name: claimId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ClaimDto'
+components:
+  schemas:
+    CreateClaimRequest:
+      required:
+        - processId
+        - profileId
+      type: object
+      properties:
+        processId:
+          type: string
+        profileId:
+          type: string
+          format: uuid
+    Health:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+            - OK
+            - DOWN
+    ClaimDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        profileId:
+          type: string
+          format: uuid
+        processId:
+          type: string
+        state:
+          type: string
+          enum:
+            - NEW
+            - REJECTED
+            - IN_PROGRESS
+            - WAITING_FOR_SIGN
+            - CANCELLED
+            - DONE
+        updated:
+          type: string
+          format: date-time
+        agreementNumber:
+          type: integer
+          format: int64
+        brokerageAccountId:
+          type: string
+          format: uuid
+        firstName:
+          type: string
+    FindClaimsResponse:
+      type: object
+      properties:
+        claims:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClaimDto'

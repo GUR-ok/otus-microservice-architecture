@@ -1,0 +1,151 @@
+openapi: 3.0.0
+info:
+  contact:
+    name: Yuriy Gorelov
+    email: gur-ok@yandex.ru
+  title: Интерцессор. Сервис-оркестартор распределенного процесса
+  version: 0.1.0
+servers:
+  - url: http://arch.homework:30001
+    description: Kubernetes cluster
+paths:
+  /process/events:
+    post:
+      tags:
+        - process-event-controller-impl
+      summary: Обработать событие
+      operationId: processEvent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/AgreementSignCancelEventData'
+                - $ref: '#/components/schemas/AgreementSignedEventData'
+                - $ref: '#/components/schemas/NewClaimReceivedEventData'
+                - $ref: '#/components/schemas/ProductUpdatedEventData'
+                - $ref: '#/components/schemas/ProfileUpdatedEventData'
+            examples:
+              Person sample:
+                summary: person example
+                description: Person sample
+                value:
+                  event: NEW_CLAIM_RECEIVED
+                  productId: '123'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/EventProcessingResult'
+components:
+  schemas:
+    AgreementSignCancelEventData:
+      required:
+        - processId
+      type: object
+      description: Событие "Подписание договора отменено"
+      allOf:
+        - $ref: '#/components/schemas/HttpEvent'
+        - type: object
+          properties:
+            processId:
+              type: string
+              description: Идентификатор процесса
+              example: e1345c75-79e5-11ed-b6ba-0a0027000005
+    AgreementSignedEventData:
+      required:
+        - processId
+        - signKey
+      type: object
+      description: Событие "Договор подписан"
+      allOf:
+        - $ref: '#/components/schemas/HttpEvent'
+        - type: object
+          properties:
+            processId:
+              type: string
+              description: Идентификатор процесса
+              example: e1345c75-79e5-11ed-b6ba-0a0027000005
+            signKey:
+              type: string
+              description: Код подписания
+              example: '1234'
+    HttpEvent:
+      type: object
+      properties:
+        event:
+          type: string
+          enum:
+            - NEW_CLAIM_RECEIVED
+            - PROFILE_UPDATED
+            - PRODUCT_UPDATED
+            - AGREEMENT_SIGNED
+            - CANCEL_SIGN
+            - BROKERAGE_NOTIFICATION
+            - CLAIM_IN_PROGRESS
+            - CLAIM_WAIT_FOR_SIGN
+            - CLAIM_CANCEL
+            - CLAIM_DONE
+            - CLAIM_REJECTED
+            - UPDATE_CLAIM
+      description: Событие
+      discriminator:
+        propertyName: event
+        mapping:
+          NEW_CLAIM_RECEIVED: '#/components/schemas/NewClaimReceivedEventData'
+          PROFILE_UPDATED: '#/components/schemas/ProfileUpdatedEventData'
+          PRODUCT_UPDATED: '#/components/schemas/ProductUpdatedEventData'
+          AGREEMENT_SIGNED: '#/components/schemas/AgreementSignedEventData'
+          CANCEL_SIGN: '#/components/schemas/AgreementSignCancelEventData'
+    NewClaimReceivedEventData:
+      required:
+        - productId
+      type: object
+      description: Событие "Получена новая заявка"
+      allOf:
+        - $ref: '#/components/schemas/HttpEvent'
+        - type: object
+          properties:
+            productId:
+              type: string
+              description: Идентификатор тарифа
+              example: '123'
+    ProductUpdatedEventData:
+      required:
+        - processId
+        - productId
+      type: object
+      description: Событие "Тариф изменен"
+      allOf:
+        - $ref: '#/components/schemas/HttpEvent'
+        - type: object
+          properties:
+            processId:
+              type: string
+              description: Идентификатор процесса
+              example: e1345c75-79e5-11ed-b6ba-0a0027000005
+            productId:
+              type: string
+              description: Идентификатор тарифа
+              example: '111'
+    ProfileUpdatedEventData:
+      required:
+        - processId
+      type: object
+      description: Событие "Данные профиля изменены"
+      allOf:
+        - $ref: '#/components/schemas/HttpEvent'
+        - type: object
+          properties:
+            processId:
+              type: string
+              description: Идентификатор процесса
+              example: e1345c75-79e5-11ed-b6ba-0a0027000005
+    EventProcessingResult:
+      type: object
+      properties:
+        processId:
+          type: string

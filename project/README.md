@@ -6,42 +6,108 @@
 ![img_2.png](img_2.png)
 
 #### **Основные сервисы:**
-- *Сервис Аутентификации (СА)*
-  
-  Исходники: https://github.com/GUR-ok/arch-auth
-  
-  Образ: https://hub.docker.com/repository/docker/gurok/arch_auth_3
-- *Сервис Управления Профилем (СУП)*
-  
-  Исходники: https://github.com/GUR-ok/arch-profiles
-  
-  Образ: https://hub.docker.com/repository/docker/gurok/arch_profiles_3
-- *Интерцессор. Сервис-оркестартор распределенного процесса* 
+- [**Сервис Аутентификации и Авторизации (СА)**](https://github.com/GUR-ok/arch-auth)
 
-  Исходники: https://github.com/GUR-ok/arch-brokerage-intercessor
+    Сервис предоставляет API для авторизации пользователя: регистрация, логин, логаут.
+    При первичной регистрации обращается в Сервис Управления Профилем для создания профиля пользователя.
+    Сервис выдает и сохраняет в Redis токен авторизации jwt, подписанный приватным ключом,
+    а также предоставляет доступ к публичному ключу для валидации jwt в Istio.
+    Сервис предоставляет методы обработки запросов для Envoy фильтра Istio,
+    в частности валидирует jwt на наличие в базе данных активных токенов (в случае компрометации jwt может быть удален из БД и не пройдет валидацию)
+    и извлекает profileId из токена для проброса дальше upstream'ом в отдельном хедере.
+
+  OpenAPI спецификация: [openapi-auth.yaml](https://github.com/GUR-ok/otus-microservice-architecture/tree/master/project/services/openapi-auth.yaml)
+  ![img_1.png](img_1.png)
+  Образ: https://hub.docker.com/repository/docker/gurok/arch_auth_3
+
+
+- [**Сервис Управления Профилем (СУП)**](https://github.com/GUR-ok/arch-profiles)
+
+    Сервис предоставляет возможность создавать и редактировать профиль пользователя.
+
+  OpenAPI спецификация: [openapi-profile.yaml](https://github.com/GUR-ok/otus-microservice-architecture/tree/master/project/services/openapi-profile.yaml)
+  ![img_3.png](img_3.png)
+  Образ: https://hub.docker.com/repository/docker/gurok/arch_profiles_3
+  
+
+- [**Интерцессор. Сервис-оркестартор распределенного процесса**](https://github.com/GUR-ok/arch-brokerage-intercessor)
+
+    Сервис под управлением Camunda (встроена в SpringBoot), основывается на bpmn-схеме,
+    к которой привязаны java-делегаты. Интеграция с другими сервисами осуществляется как по REST-api,
+    так и через брокеры сообщений. Входящие запросы - по HTTP.
+    Отмена локальных транзакций в микросервисах осуществляется посредством компенсирующих вызовов (паттерн "Сага").
+    В случае возникновения исключений на шагах распредлеленной транзакции механизмы Camunda перехватят ошибку и
+    произведут компенсирующие действия только для пройденных шагов.
+    Camunda позволяет дополнительно настраивать ретраи, что при реализации идемпотентных api значительно повысит надежность системы.
+
+  OpenAPI спецификация: [openapi-intercessor.yaml](https://github.com/GUR-ok/otus-microservice-architecture/tree/master/project/services/openapi-intercessor.yaml)
+  ![img_4.png](img_4.png)
+  Async API спецификация: [intercessor-async-api.yaml](https://github.com/GUR-ok/otus-microservice-architecture/tree/master/project/services/intercessor-async-api.yaml)
+ 
   Образ: https://hub.docker.com/repository/docker/gurok/arch_brokerage_intercessor
-- *Сервис Заявки*
   
-  Исходники: https://github.com/GUR-ok/arch-claim
-  
+
+- [**Сервис Заявки**](https://github.com/GUR-ok/arch-claim)
+
+    Сервис для хранения данных заявки на открытие брокерского счета.
+    При создании новой заявки, предыдущие заявки в статусе NEW переходят в состояние CANCELLED. 
+    Если у пользователя есть заявки в сотсояниях IN_PROGRESS или WAITING_FOR_SIGN, то интерцессор не разрешит создание новой заявки.
+    
+    Статусная модель:
+    
+    ![ClaimStatus.png](ClaimStatus.png)
+
+  OpenAPI спецификация: [openapi-claim.yaml](https://github.com/GUR-ok/otus-microservice-architecture/tree/master/project/services/openapi-claim.yaml)
+  ![img_5.png](img_5.png)
+  Async API спецификация: [claim-async-api.yaml](https://github.com/GUR-ok/otus-microservice-architecture/tree/master/project/services/claim-async-api.yaml)
+
   Образ: https://hub.docker.com/repository/docker/gurok/arch_claim
-- *Сервис Уведомлений*
   
-  Исходники: https://github.com/GUR-ok/arch-notification
-  
+
+- [**Сервис Уведомлений**](https://github.com/GUR-ok/arch-notification)
+
+    Сервис принимает сообщения об изменении статуса заявки.
+    Сервис отправляет письма клиенту об изменении статуса заявки,
+    а также отправляет клиенту код подтверждения и ссылку на скачивание договора 
+    (в демонстрационных целях сообщения кладутся в БД).
+
+  OpenAPI спецификация: [openapi-notification.yaml](https://github.com/GUR-ok/otus-microservice-architecture/tree/master/project/services/openapi-notification.yaml)
+  ![img_7.png](img_7.png)
+  Async API спецификация: [notification-async-api.yaml](https://github.com/GUR-ok/otus-microservice-architecture/tree/master/project/services/notification-async-api.yaml)
+ 
   Образ: https://hub.docker.com/repository/docker/gurok/arch_notification_2
-- *Сервис генерации Документов*
   
-  Исходники: https://github.com/GUR-ok/arch-documentgenerator
-  
+
+- [**Сервис генерации Документов**](https://github.com/GUR-ok/arch-documentgenerator)
+
+    Сервис генерирует печатную форму договора в формате .pdf,
+    сохраняет печатную форму в файловое хранилище и получает ссылку на скачивание.
+
+  OpenAPI спецификация: [openapi-documentgenerator.yaml](https://github.com/GUR-ok/otus-microservice-architecture/tree/master/project/services/openapi-documentgenerator.yaml)
+  ![img_8.png](img_8.png)
   Образ: https://hub.docker.com/repository/docker/gurok/arch_documentgenerator
 
 #### **Дополнительные сервисы (в проекте застабированы для экономии ресурсов):**
-- Сервис проверки по Стоп-листам https://github.com/GUR-ok/arch-stoplist
-- Сервис Договора https://github.com/GUR-ok/arch-agreement
-- Сервис Брокерских счетов https://github.com/GUR-ok/arch-brokerageaccount
-- Сервис справочник Тарифов https://github.com/GUR-ok/arch-productdictionary
 
+- [Сервис проверки по Стоп-листам](https://github.com/GUR-ok/arch-stoplist)
+  
+    Сервис проверяет паспорт клиента по черным спискам.
+    В проекте застабирован (паспорт с номером 123456 считается валидным, остальные - в черных списках)
+
+- [Сервис Договора](https://github.com/GUR-ok/arch-agreement)
+  
+    Создает запись с данынми договора в БД. Возвращает номер договора. 
+    В проекте застабирован (возвращает случайное число)
+  
+- [Сервис Брокерских счетов](https://github.com/GUR-ok/arch-brokerageaccount)
+  
+    Создает запись брокерского счета в БД. Возвращает идентификатор счета. 
+    В проекте застабирован (возвращает случайное идентификатор)
+- [Сервис справочник Тарифов](https://github.com/GUR-ok/arch-productdictionary)
+  
+    Проверяет признак активного тарифа по идентификатору тарифа. 
+    В проекте застабирован (продукт с id 111 счиатется активным, остальные нет)
+  
 #### **Базы Данных:**
 - Реляционные БД (PostgreSQL):
   
@@ -67,7 +133,7 @@
 
 ### **Описание приложения:**
 I. Регистрация, логин, логаут пользователя
-
+![sequence_diag1.png](sequence_diag1.png)
 1) Запросы на /auth/ не требуют авторизации (перенаправляются на СА), остальные запросы требуют передачи валидного jwt (
    перенаправляются на СУП).
 2) Пользователю доступны API /auth/register, /auth/login, /auth/logout, а также API управления Профилем с доступом по токену
@@ -88,7 +154,31 @@ I. Регистрация, логин, логаут пользователя
    неавторизованным. Верификация и проверка подписи jwt в СУП не производится, 
    за верификацию отвечает Istio.
 
-//todo
+II. Создание заявки
+![img_6.png](img_6.png)
+1) После успешной авторизации пользователь с jwt обращается в Интерцессор /intercessor/process/events, 
+   где в теле передает идентификатор тарифа и событие NEW_CLAIM_RECEIVED.
+2) Истио EnvoyFilter извлекает profileId из jwt и прокидывает в Интерцессор в хедерах.
+3) Интерцессор запускает процесс на bpmn схеме, возвращает идентификатор процесса.
+4) По схеме сначала проверяется наличие у клиента заявок на стадии подписания. 
+   Если таких заявок нет, то заводится новая заявка в сервисе Заявок.
+   Иначе клиент уведомляется о невозможности создания заявки.
+5) После создания заявки проверяется заполненность паспортных данных клиента и признак 
+   активного тарифа. В случае неуспешной проверки, клиент уведомляется
+   о необходимости уточнить паспортные данные или изменить тариф.
+6) После успешных проверок паспорт проверяется по черным спискам. Если проверка не прошла,
+   то заявка переходит в статус REJECTED и клиент уведомляется.  
+7) После успешной проверки по черным спискам, заявка переходит в состояние IN_PROGRESS и 
+   создается договор в сервисе Договора. Заявка в сервисе Заявок обновляется данными о договоре.
+8) Генерируется печатная форма договора в сервисе Генерации Документов, создается ссылка на скачивание pdf-документа.
+9) Заявка переходит в состояние WAITING_FOR_SIGN, генерируется код подтверждения и высылается клиенту вместе
+   со ссылкой на скачивание документа договора.
+10) Пользователь может:
+   * ввести правильный код - создастся брокерский счет в сервисе Брокерского Счета, произойдет уведомление клиента,
+     заявка перейдет в статус DONE.
+   * отменить подписание - заявка перейдет в статус CANCELLED, произойдет компенсирующий вызов,
+     аннулирующий договор в сервисе Договора.
+   * ввести неправильный код - в таком случае будет выслан новый код
 
 #### Инструкция по запуску:
 
@@ -146,25 +236,27 @@ I. Регистрация, логин, логаут пользователя
 - `kubectl describe node minikube`
 
 Для демонстрации процесса:
-1. Для управления процессами. Запустить Excamad в докере на локальной машине 'docker run -d -p 8080:8080 kotovdenis/excamad:latest'
-Админская панель Excamad по адресу http://localhost:8080/#/?baseurl=http%3A%2F%2Flocalhost%3A8081%2Fengine-rest%2F
+1. Для управления процессами. Запустить Excamad в докере на локальной машине `docker run -d -p 8080:8080 kotovdenis/excamad:latest`
+   
+   Админская панель Excamad по адресу http://localhost:8080/#/?baseurl=http%3A%2F%2Flocalhost%3A8081%2Fengine-rest%2F
+   
    Пробросить порт Интерцессора на локалхост
    ``
    kubectl get pods -n arch-gur
    kubectl port-forward -n arch-gur arch-brokerage-intercessor-deployment-7c5d669b64-dqglz 8081:8000
    ``
-   Учетка: demo demo
+   * Учетка: demo demo
 
 2. Контроль сообщений пользователю смотреть в БД
    `kubectl port-forward -n arch-gur arch-notification-postgresql-deployment-0 5435:5432`
-   Название БД: arch_notification_db
-   Учетка: admin password  
+   * Название БД: arch_notification_db
+   * Учетка: admin password  
 3. Контроль статусов заявок смотреть в БД
    `kubectl port-forward -n arch-gur arch-claim-postgresql-deployment-0 5436:5432`
-   Название БД: arch_claim_db 
-   Учетка: admin password  
+   * Название БД: arch_claim_db 
+   * Учетка: admin password  
 4. Файловое хранилище доступно по адресу http://arch.homework:30002/minio/
-   Учетка: minio_access_key minio_secret_key
+   * Учетка: minio_access_key minio_secret_key
 
 ---
 

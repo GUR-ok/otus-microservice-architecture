@@ -1,0 +1,147 @@
+openapi: 3.0.0
+info:
+  contact:
+    name: Yuriy Gorelov
+    email: gur-ok@yandex.ru
+  title: Сервис Аутентификации
+  version: 0.1.0
+servers:
+  - url: http://arch.homework:30001
+    description: Kubernetes cluster
+paths:
+  /register:
+    post:
+      tags:
+        - user-controller-impl
+      summary: Зарегистрировать нового пользователя
+      operationId: register
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+                  format: uuid
+  /logout:
+    post:
+      tags:
+        - user-controller-impl
+      summary: Выйти из системы
+      operationId: logout
+      responses:
+        '200':
+          description: OK
+  /login:
+    post:
+      tags:
+        - user-controller-impl
+      summary: Вход в систему
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: string
+  /auth/istio/**:
+    get:
+      tags:
+        - user-controller-impl
+      summary: Фильтр GET запросов
+      operationId: istio
+      responses:
+        '200':
+          description: OK
+    post:
+      tags:
+        - user-controller-impl
+      summary: Фильтр POST запросов
+      operationId: istioPost
+      responses:
+        '200':
+          description: OK
+    patch:
+      tags:
+        - user-controller-impl
+      summary: Фильтр PATCH запросов
+      operationId: istioPatch
+      responses:
+        '200':
+          description: OK
+  /health:
+    get:
+      tags:
+        - health-check
+      operationId: health
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Health'
+  /.well-known/jwks.json:
+    get:
+      tags:
+        - jwk-set-rest-controller
+      operationId: keys
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties:
+                  type: object
+components:
+  schemas:
+    RegisterRequest:
+      required:
+        - email
+        - login
+        - password
+      type: object
+      properties:
+        email:
+          type: string
+        login:
+          type: string
+        password:
+          type: string
+    LoginRequest:
+      required:
+        - login
+        - password
+      type: object
+      properties:
+        login:
+          type: string
+        password:
+          type: string
+    Health:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+            - OK
+            - DOWN
