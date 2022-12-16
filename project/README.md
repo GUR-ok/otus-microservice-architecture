@@ -1,9 +1,9 @@
 ### Проект "Брокерское обслуживание клиентов с использованием микросервисной архитектуры"
-![img.png](img.png)
+![img.png](pictures/img.png)
 
 ### **Компоненты приложения:**
 
-![img_2.png](img_2.png)
+![img_2.png](pictures/img_2.png)
 
 #### **Основные сервисы:**
 - [**Сервис Аутентификации и Авторизации (СА)**](https://github.com/GUR-ok/arch-auth)
@@ -17,7 +17,7 @@
     и извлекает profileId из токена для проброса дальше upstream'ом в отдельном хедере.
 
   OpenAPI спецификация: [openapi-auth.yaml](https://github.com/GUR-ok/otus-microservice-architecture/tree/master/project/services/openapi-auth.yaml)
-  ![img_1.png](img_1.png)
+  ![img_1.png](pictures/img_1.png)
   Образ: https://hub.docker.com/repository/docker/gurok/arch_auth_3
 
 
@@ -26,7 +26,7 @@
     Сервис предоставляет возможность создавать и редактировать профиль пользователя.
 
   OpenAPI спецификация: [openapi-profile.yaml](https://github.com/GUR-ok/otus-microservice-architecture/tree/master/project/services/openapi-profile.yaml)
-  ![img_3.png](img_3.png)
+  ![img_3.png](pictures/img_3.png)
   Образ: https://hub.docker.com/repository/docker/gurok/arch_profiles_3
   
 
@@ -41,7 +41,7 @@
     Camunda позволяет дополнительно настраивать ретраи, что при реализации идемпотентных api значительно повысит надежность системы.
 
   OpenAPI спецификация: [openapi-intercessor.yaml](https://github.com/GUR-ok/otus-microservice-architecture/tree/master/project/services/openapi-intercessor.yaml)
-  ![img_4.png](img_4.png)
+  ![img_4.png](pictures/img_4.png)
   Async API спецификация: [intercessor-async-api.yaml](https://github.com/GUR-ok/otus-microservice-architecture/tree/master/project/services/intercessor-async-api.yaml)
  
   Образ: https://hub.docker.com/repository/docker/gurok/arch_brokerage_intercessor
@@ -55,10 +55,10 @@
     
     Статусная модель:
     
-    ![ClaimStatus.png](ClaimStatus.png)
+    ![ClaimStatus.png](pictures/ClaimStatus.png)
 
   OpenAPI спецификация: [openapi-claim.yaml](https://github.com/GUR-ok/otus-microservice-architecture/tree/master/project/services/openapi-claim.yaml)
-  ![img_5.png](img_5.png)
+  ![img_5.png](pictures/img_5.png)
   Async API спецификация: [claim-async-api.yaml](https://github.com/GUR-ok/otus-microservice-architecture/tree/master/project/services/claim-async-api.yaml)
 
   Образ: https://hub.docker.com/repository/docker/gurok/arch_claim
@@ -72,7 +72,7 @@
     (в демонстрационных целях сообщения кладутся в БД).
 
   OpenAPI спецификация: [openapi-notification.yaml](https://github.com/GUR-ok/otus-microservice-architecture/tree/master/project/services/openapi-notification.yaml)
-  ![img_7.png](img_7.png)
+  ![img_7.png](pictures/img_7.png)
   Async API спецификация: [notification-async-api.yaml](https://github.com/GUR-ok/otus-microservice-architecture/tree/master/project/services/notification-async-api.yaml)
  
   Образ: https://hub.docker.com/repository/docker/gurok/arch_notification_2
@@ -84,7 +84,7 @@
     сохраняет печатную форму в файловое хранилище и получает ссылку на скачивание.
 
   OpenAPI спецификация: [openapi-documentgenerator.yaml](https://github.com/GUR-ok/otus-microservice-architecture/tree/master/project/services/openapi-documentgenerator.yaml)
-  ![img_8.png](img_8.png)
+  ![img_8.png](pictures/img_8.png)
   Образ: https://hub.docker.com/repository/docker/gurok/arch_documentgenerator
 
 #### **Дополнительные сервисы (в проекте застабированы для экономии ресурсов):**
@@ -133,7 +133,7 @@
 
 ### **Описание приложения:**
 I. Регистрация, логин, логаут пользователя
-![sequence_diag1.png](sequence_diag1.png)
+![sequence_diag1.png](pictures/sequence_diag1.png)
 1) Запросы на /auth/ не требуют авторизации (перенаправляются на СА), остальные запросы требуют передачи валидного jwt (
    перенаправляются на СУП).
 2) Пользователю доступны API /auth/register, /auth/login, /auth/logout, а также API управления Профилем с доступом по токену
@@ -155,7 +155,7 @@ I. Регистрация, логин, логаут пользователя
    за верификацию отвечает Istio.
 
 II. Создание заявки
-![img_6.png](img_6.png)
+![img_6.png](pictures/img_6.png)
 1) После успешной авторизации пользователь с jwt обращается в Интерцессор /intercessor/process/events, 
    где в теле передает идентификатор тарифа и событие NEW_CLAIM_RECEIVED.
 2) Истио EnvoyFilter извлекает profileId из jwt и прокидывает в Интерцессор в хедерах.
