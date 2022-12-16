@@ -254,7 +254,9 @@ Full Start:
    kubectl get pods -n arch-gur
    kubectl port-forward -n arch-gur arch-brokerage-intercessor-deployment-7c5d669b64-dqglz 8081:8000
    ``
-   * Учетка: demo demo
+   
+   В настрйоках экзамада указать адрес подключаемой камунды http://localhost:8081/engine-rest/
+    * Учетка: demo demo
 
 2. Контроль сообщений пользователю смотреть в БД
    `kubectl port-forward -n arch-gur arch-notification-postgresql-deployment-0 5435:5432`
