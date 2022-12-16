@@ -1,0 +1,89 @@
+openapi: 3.0.0
+info:
+  contact:
+    name: Yuriy Gorelov
+    email: gur-ok@yandex.ru
+  title: Сервис генерации Документов
+  version: 0.1.0
+servers:
+  - url: http://arch.homework:30001
+    description: Kubernetes cluster
+paths:
+  /reports:
+    get:
+      tags:
+        - report-controller
+      summary: Получить ссылку на документ
+      operationId: getUrl
+      parameters:
+        - name: name
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+    post:
+      tags:
+        - report-controller
+      summary: Сгенерировать печатную форму
+      operationId: report
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAgreementRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: string
+  /health:
+    get:
+      tags:
+        - health-check
+      operationId: health
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/Health'
+components:
+  schemas:
+    CreateAgreementRequest:
+      required:
+        - agreementNumber
+        - date
+        - firstName
+        - passportNumber
+        - product
+      type: object
+      properties:
+        agreementNumber:
+          type: string
+        firstName:
+          type: string
+        passportNumber:
+          type: string
+        product:
+          type: string
+        date:
+          type: string
+    Health:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+            - OK
+            - DOWN

@@ -1,0 +1,49 @@
+asyncapi: '2.4.0'
+info:
+  title: Notification service
+  version: '1.0.0'
+  description: |
+    Notification service
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+
+servers:
+  test:
+    url: kafka:9094
+    protocol: kafka
+    description: Test broker
+
+defaultContentType: application/json
+
+channels:
+  brokerage-notification:
+    subscribe:
+      operationId: BrokerageNotificationEvent
+      message:
+        $ref: '#/components/messages/BrokerageNotificationEventData'
+
+components:
+  messages:
+    BrokerageNotificationEventData:
+      name: notifyClient
+      title: Notification
+      summary: Notification
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/BrokerageNotificationEventData'
+
+  schemas:
+    BrokerageNotificationEventData:
+      type: object
+      properties:
+        accountId:
+          type: string
+          format: uuid
+        message:
+          type: string
+        event:
+          type: string
+          enum:
+            - BROKERAGE_NOTIFICATION
+          example: BROKERAGE_NOTIFICATION

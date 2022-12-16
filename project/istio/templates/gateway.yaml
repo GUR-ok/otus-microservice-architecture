@@ -39,12 +39,23 @@ spec:
         - uri:
             prefix: /profiles/health
       rewrite:
-        uri: /health # Перезаписываем префикс с /auth/ на /, чтобы запросы шли в корень сервиса
+        uri: /health # Перезаписываем префикс с /profiles/health на /health, чтобы запросы шли в корень сервиса
       route:
         - destination:
             port:
               number: 9000
             host: arch-profiles-service.arch-gur.svc.cluster.local
+    - name: "intercessor-health" # Указываем имя для применения EnvoyFilter
+      match:
+        - uri:
+            prefix: /intercessor/health
+      rewrite:
+        uri: /health # Перезаписываем префикс с  /intercessor/health на /health, чтобы запросы шли в корень сервиса
+      route:
+        - destination:
+            port:
+              number: 9099
+            host: arch-brokerage-intercessor-service.arch-gur.svc.cluster.local
     - match:
         - uri:
             prefix: /intercessor # Запросы направляем к intercessor
