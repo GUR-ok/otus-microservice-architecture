@@ -65,13 +65,6 @@
 							"path": [
 								"auth",
 								"health"
-							],
-							"query": [
-								{
-									"key": "",
-									"value": "asfa",
-									"disabled": true
-								}
 							]
 						}
 					},
@@ -133,13 +126,6 @@
 							"path": [
 								"profiles",
 								"health"
-							],
-							"query": [
-								{
-									"key": "",
-									"value": "asfa",
-									"disabled": true
-								}
 							]
 						}
 					},
@@ -922,7 +908,11 @@
 								"exec": [
 									"var jsonData = pm.response.json();\r",
 									"var jsonData = JSON.parse(responseBody);\r",
-									"pm.collectionVariables.set(\"processId\", jsonData.processId);"
+									"pm.collectionVariables.set(\"processId\", jsonData.processId);\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
 								],
 								"type": "text/javascript"
 							}
@@ -1025,6 +1015,19 @@
 				},
 				{
 					"name": "Profile UPDATED",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [
@@ -1065,7 +1068,20 @@
 					"response": []
 				},
 				{
-					"name": "Product UPDATED",
+					"name": "Agreement SIGNED",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [
@@ -1082,7 +1098,69 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"processId\":\"{{processId}}\",\r\n    \"event\" : \"PRODUCT_UPDATED\",\r\n    \"productId\" : \"111\"\r\n}",
+							"raw": "{\r\n    \"processId\":\"{{processId}}\",\r\n    \"event\" : \"AGREEMENT_SIGNED\",\r\n    \"signKey\" : \"8158\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}:{{port}}/intercessor/process/events",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"intercessor",
+								"process",
+								"events"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Intercessor Copy (Cancel Sign)",
+			"item": [
+				{
+					"name": "New CLAIM",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"var jsonData = JSON.parse(responseBody);\r",
+									"pm.collectionVariables.set(\"processId\", jsonData.processId);\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "x-auth-session",
+								"value": "{{session}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"event\" : \"NEW_CLAIM_RECEIVED\",\r\n    \"productId\": \"111\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1106,7 +1184,22 @@
 					"response": []
 				},
 				{
-					"name": "Agreement SIGNED",
+					"name": "New CLAIM Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"var jsonData = JSON.parse(responseBody);\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [
@@ -1123,7 +1216,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"processId\":\"{{processId}}\",\r\n    \"event\" : \"AGREEMENT_SIGNED\",\r\n    \"signKey\" : \"6893\"\r\n}",
+							"raw": "{\r\n    \"event\" : \"NEW_CLAIM_RECEIVED\",\r\n    \"productId\": \"111\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1148,6 +1241,19 @@
 				},
 				{
 					"name": "Agreement CANCEL_SIGN",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [
@@ -1165,6 +1271,237 @@
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n    \"processId\":\"{{processId}}\",\r\n    \"event\" : \"CANCEL_SIGN\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}:{{port}}/intercessor/process/events",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"intercessor",
+								"process",
+								"events"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Intercessor Copy (Wrong Product)",
+			"item": [
+				{
+					"name": "New CLAIM",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"var jsonData = JSON.parse(responseBody);\r",
+									"pm.collectionVariables.set(\"processId\", jsonData.processId);\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "x-auth-session",
+								"value": "{{session}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"event\" : \"NEW_CLAIM_RECEIVED\",\r\n    \"productId\": \"12121414\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}:{{port}}/intercessor/process/events",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"intercessor",
+								"process",
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Agreement SIGNED",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "x-auth-session",
+								"value": "{{session}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"processId\":\"{{processId}}\",\r\n    \"event\" : \"AGREEMENT_SIGNED\",\r\n    \"signKey\" : \"8000\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}:{{port}}/intercessor/process/events",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"intercessor",
+								"process",
+								"events"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Intercessor Copy (Wrong Passport)",
+			"item": [
+				{
+					"name": "Update Profile Valid JWT Copy 2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "x-auth-session",
+								"value": "{{session}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"fullName\": \"{{new_fullName}}\",\r\n    \"age\": {{new_age}},\r\n    \"firstName\":\"Иван\",\r\n    \"passportNumber\":\"123555\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{baseUrl}}:{{port}}/profiles/{{profile_id}}",
+							"protocol": "http",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"profiles",
+								"{{profile_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New CLAIM",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"var jsonData = JSON.parse(responseBody);\r",
+									"pm.collectionVariables.set(\"processId\", jsonData.processId);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-auth-token",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "x-auth-session",
+								"value": "{{session}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"event\" : \"NEW_CLAIM_RECEIVED\",\r\n    \"productId\": \"111\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"

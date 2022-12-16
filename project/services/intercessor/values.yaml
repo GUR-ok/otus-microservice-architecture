@@ -1,7 +1,6 @@
 config:
   name: arch-brokerage-intercessor-configmap
   port: 8000
-  ddl: validate
 secret:
   name: arch-brokerage-intercessor-secret
 deployment:
