@@ -30,7 +30,7 @@
   Образ: https://hub.docker.com/repository/docker/gurok/arch_profiles_3
   
 
-- [**Интерцессор. Сервис-оркестартор распределенного процесса**](https://github.com/GUR-ok/arch-brokerage-intercessor)
+- [**Интерцессор. Сервис-оркестратор распределенного процесса**](https://github.com/GUR-ok/arch-brokerage-intercessor)
 
     Сервис под управлением Camunda (встроена в SpringBoot), основывается на bpmn-схеме,
     к которой привязаны java-делегаты. Интеграция с другими сервисами осуществляется как по REST-api,
